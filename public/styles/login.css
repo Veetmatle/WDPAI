@@ -1,1 +1,56 @@
-h1 {color: red;}
+h1 {
+    color: coral;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+form {
+    background-color: bisque;
+    border-radius: 1rem;
+    padding: 2rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+}
+
+button {
+    background: linear-gradient(135deg, #ff7f50, #ff6347);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    margin-top: 0.5rem;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+input {
+    padding: 0.5rem;
+    margin: 0.3rem 0;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), 
+                inset 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+input:focus {
+    outline: none;
+    border-color: coral;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), 
+                0 0 0 3px rgba(255, 127, 80, 0.1);
+}
