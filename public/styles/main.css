@@ -71,3 +71,13 @@ aside {
     padding: 1rem;
     }
 }
+
+.message 
+{
+    background-color: #FED7D7;
+    color: #C53030;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #C53030;
+    border-radius: 5px;
+}

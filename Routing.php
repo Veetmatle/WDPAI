@@ -7,6 +7,7 @@ class Routing
     public static $routes = [
         'login' => ['controller' => 'SecurityController', 'action' => 'login'],
         'dashboard' => ['controller' => 'DashboardController', 'action' => 'index'],
+        'register' => ['controller' => 'SecurityController', 'action' => 'register'],
     ];
 
     public static function run(string $path) 
@@ -23,6 +24,11 @@ class Routing
         case 'login':
             $controller = new Routing::$routes['login']['controller'];
             $action = Routing::$routes['login']['action'];
+            $controller->$action();
+            break;
+        case 'register':
+            $controller = new Routing::$routes['register']['controller'];
+            $action = Routing::$routes['register']['action'];
             $controller->$action();
             break;
         default:
