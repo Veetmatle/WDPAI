@@ -34,6 +34,11 @@ class SecurityController extends AppController
             return $this->render('login', ['messages' => 'Wypełnij wszystkie pola!']);
         }
 
+        // TODO: tutaj to do ogarnięcia z bazą danych
+        $userRepository = new UserRepository();
+        $user = $userRepository->getUser();
+        var_dump($users);
+
         $userRow = null;
         foreach (self::$users as $u) {
             if (strcasecmp($u['email'], $email) === 0) {
