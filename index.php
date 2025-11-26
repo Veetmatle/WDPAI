@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 require 'Routing.php';
 
 // kod 418 - czas na kawe

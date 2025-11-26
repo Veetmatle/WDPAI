@@ -11,9 +11,15 @@
     <form action="register" method="POST"> 
         <h1>REGISTER FORM</h1>
 
-        <?php if(isset($messages)) : ?>
-            <div class="message"><?php echo $messages; ?></div>
-        <?php endif; ?>
+        <div class="messages">
+        <?php
+            if(isset($messages)){
+            foreach($messages as $message) {
+            echo $message;
+            }
+        }
+        ?>
+        </div>
 
         <input type="text" placeholder="Imię (firstname)" id="firstname" name="firstname" required>
         <input type="email" placeholder="email" id="email" name="email" required>

@@ -9,8 +9,8 @@ class SecurityController extends AppController
 
     public function __construct()
     {
-        parent::__construct();
-        $this->userRepository = UserRepository::getInstance();
+        //parent::__construct();
+        $this->userRepository = new UserRepository();
     }
 
     public function login()
@@ -26,7 +26,6 @@ class SecurityController extends AppController
             return $this->render('login', ['messages' => ['Wypełnij wszystkie pola!']]);
         }
 
-        // Sprawdzenie czy user istnieje w bazie
         $user = $this->userRepository->getUser($email);
 
         if (!$user) {
@@ -38,11 +37,9 @@ class SecurityController extends AppController
             return $this->render('login', ['messages' => ['Nieprawidłowy email lub hasło']]);
         }
 
-        // Logowanie udane - rozpocznij sesję
         $_SESSION['user_email'] = $user->getEmail();
         $_SESSION['user_name'] = $user->getName();
 
-        // Przekierowanie do dashboardu
         return $this->redirect('/dashboard');
     }
 

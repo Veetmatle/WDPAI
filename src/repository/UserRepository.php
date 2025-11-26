@@ -1,21 +1,10 @@
 <?php
 
 require_once 'Repository.php';
-require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../model/User.php';
 
 class UserRepository extends Repository
 {
-    private static ?UserRepository $instance = null;
-
-    // Singleton pattern
-    public static function getInstance(): UserRepository
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
-
     public function getUsers(): ?array
     {
         $stmt = $this->database->connect()->prepare('
@@ -54,7 +43,6 @@ class UserRepository extends Repository
     {
         $conn = $this->database->connect();
         
-        // Hashowanie hasła
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
         
         $stmt = $conn->prepare('

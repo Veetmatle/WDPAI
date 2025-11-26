@@ -9,9 +9,16 @@ class AppController
 
     protected function render(string $view, array $data = [])
     {
-        // Twoja logika renderowania widoku
         extract($data);
-        include "public/views/$view.php";
+        
+        // Zmiana na ścieżkę absolutną
+        $templatePath = __DIR__ . '/../../public/views/' . $view . '.html';
+
+        if (file_exists($templatePath)) {
+            include $templatePath;
+        } else {
+            die("View not found: " . $templatePath); 
+        }
     }
 
     protected function redirect(string $path): void
