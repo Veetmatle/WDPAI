@@ -2,38 +2,30 @@
 
 require_once 'src/controllers/SecurityController.php';
 require_once 'src/controllers/DashboardController.php';
+
 class Routing 
 {
     public static $routes = [
         'login' => ['controller' => 'SecurityController', 'action' => 'login'],
         'dashboard' => ['controller' => 'DashboardController', 'action' => 'index'],
         'register' => ['controller' => 'SecurityController', 'action' => 'register'],
+        'logout' => ['controller' => 'SecurityController', 'action' => 'logout'],
     ];
 
     public static function run(string $path) 
     {
-        //TODO na podstawie sciezki sprawdzamy jaki HTML zwrocic
-        switch ($path) 
-        {
-        case 'dashboard':
-            // co jeśli user przekaze zmienna, jak przekazac zmienna do akcji z kontrolera
-            $controller = new Routing::$routes['dashboard']['controller'];
-            $action = Routing::$routes['dashboard']['action'];
-            $controller->$action();
-            break;
-        case 'login':
-            $controller = new Routing::$routes['login']['controller'];
-            $action = Routing::$routes['login']['action'];
-            $controller->$action();
-            break;
-        case 'register':
-            $controller = new Routing::$routes['register']['controller'];
-            $action = Routing::$routes['register']['action'];
-            $controller->$action();
-            break;
-        default:
+        // Sprawdź czy ścieżka istnieje w routach
+        if (!array_key_exists($path, self::$routes)) {
             include 'public/views/404.html';
-            break;
-        } 
+            return;
+        }
+
+        $route = self::$routes[$path];
+        $controllerName = $route['controller'];
+        $action = $route['action'];
+
+        // Utwórz instancję kontrolera i wywołaj akcję
+        $controller = new $controllerName();
+        $controller->$action();
     }
 }

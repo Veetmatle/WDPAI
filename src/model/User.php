@@ -1,22 +1,24 @@
 <?php
 
 class User {
-    private $email;
-    private $password;
-    private $name;
-    private $surname;
-    private $phone;
+    private string $email;
+    private string $password;
+    private string $name;
+    private string $surname;
+    private ?string $phone;
 
     public function __construct(
         string $email,
         string $password,
         string $name,
-        string $surname
+        string $surname,
+        ?string $phone = null
     ) {
         $this->email = $email;
         $this->password = $password;
         $this->name = $name;
         $this->surname = $surname;
+        $this->phone = $phone;
     }
 
     public function getEmail(): string 
@@ -24,7 +26,7 @@ class User {
         return $this->email;
     }
 
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -49,13 +51,23 @@ class User {
         $this->surname = $surname;
     }
 
-    public function getPhone()
+    public function getPhone(): ?string
     {
         return $this->phone;
     }
 
-    public function setPhone($phone): void
+    public function setPhone(?string $phone): void
     {
         $this->phone = $phone;
+    }
+
+    public function verifyPassword(string $password): bool
+    {
+        return password_verify($password, $this->password);
+    }
+
+    public function getFullName(): string
+    {
+        return $this->name . ' ' . $this->surname;
     }
 }

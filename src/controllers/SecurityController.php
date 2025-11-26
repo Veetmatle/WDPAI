@@ -1,24 +1,17 @@
 <?php
 
 require_once 'AppController.php';
+require_once __DIR__.'/../repository/UserRepository.php';
 
 class SecurityController extends AppController
 {
-    // ======= LOKALNA "BAZA" UŻYTKOWNIKÓW =======
-    // (Zostawiamy ją jako 'static' na razie, choć docelowo przeniesiemy to do repozytorium)
-    private static array $users = [
-        [
-            'email' => 'anna@example.com',
-            'password' => '$2y$10$wz2g9JrHYcF8bLGBbDkEXuJQAnl4uO9RV6cWJKcf.6uAEkhFZpU0i', // test123
-            'first_name' => 'Anna'
-        ],
-        [
-            'email' => 'bartek@example.com',
-            'password' => '$2y$10$fK9rLobZK2C6rJq6B/9I6u6Udaez9CaRu7eC/0zT3pGq5piVDsElW', // haslo456
-            'first_name' => 'Bartek'
-        ],
-    ];
+    private UserRepository $userRepository;
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->userRepository = UserRepository::getInstance();
+    }
 
     public function login()
     {
@@ -26,36 +19,30 @@ class SecurityController extends AppController
             return $this->render('login');
         }
 
-        $email = $_POST["email"] ?? '';
-        $password = $_POST["password"] ?? '';
+        $email = $_POST['email'] ?? '';
+        $password = $_POST['password'] ?? '';
 
         if (empty($email) || empty($password)) {
-            // Zmieniamy komunikat na tablicę, jak mieliśmy wcześniej
-            return $this->render('login', ['messages' => 'Wypełnij wszystkie pola!']);
+            return $this->render('login', ['messages' => ['Wypełnij wszystkie pola!']]);
         }
 
-        // TODO: tutaj to do ogarnięcia z bazą danych
-        $userRepository = new UserRepository();
-        $user = $userRepository->getUser();
-        var_dump($users);
+        // Sprawdzenie czy user istnieje w bazie
+        $user = $this->userRepository->getUser($email);
 
-        $userRow = null;
-        foreach (self::$users as $u) {
-            if (strcasecmp($u['email'], $email) === 0) {
-                $userRow = $u;
-                break;
-            }
+        if (!$user) {
+            return $this->render('login', ['messages' => ['Nieprawidłowy email lub hasło']]);
         }
 
-        if (!$userRow) {
-            return $this->render('login', ['messages' => 'Użytkownik nie znaleziony']);
+        // Weryfikacja hasła
+        if (!$user->verifyPassword($password)) {
+            return $this->render('login', ['messages' => ['Nieprawidłowy email lub hasło']]);
         }
 
-        if (!password_verify($password, $userRow['password'])) {
-            return $this->render('login', ['messages' => 'Błędne hasło']);
-        }
+        // Logowanie udane - rozpocznij sesję
+        $_SESSION['user_email'] = $user->getEmail();
+        $_SESSION['user_name'] = $user->getName();
 
-        // Używamy naszej nowej metody z AppController
+        // Przekierowanie do dashboardu
         return $this->redirect('/dashboard');
     }
 
@@ -67,40 +54,44 @@ class SecurityController extends AppController
 
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
-        $passwordRepeat = $_POST['password_repeat'] ?? ''; // <-- Pobieramy powtórzone hasło
+        $passwordRepeat = $_POST['password_repeat'] ?? '';
         $firstName = $_POST['firstname'] ?? '';
+        $lastName = $_POST['lastname'] ?? '';
 
-        if (empty($email) || empty($password) || empty($passwordRepeat) || empty($firstName)) {
-            return $this->render('register', ['messages' => 'Wypełnij wszystkie pola!']);
+        if (empty($email) || empty($password) || empty($passwordRepeat) || empty($firstName) || empty($lastName)) {
+            return $this->render('register', ['messages' => ['Wypełnij wszystkie pola!']]);
         }
 
-        // --- DODANA WALIDACJA ---
+        // Walidacja hasła
         if ($password !== $passwordRepeat) {
-            return $this->render('register', ['messages' => 'Hasła nie są identyczne!']);
+            return $this->render('register', ['messages' => ['Hasła nie są identyczne!']]);
         }
 
+        // Walidacja email
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-             return $this->render('register', ['messages' => 'Niepoprawny format email!']);
-        }
-        // --- KONIEC WALIDACJI ---
-
-
-        foreach (self::$users as $u) {
-            if (strcasecmp($u['email'], $email) === 0) {
-                return $this->render('register', ['messages' => 'Ten email jest już zajęty']);
-            }
+            return $this->render('register', ['messages' => ['Niepoprawny format email!']]);
         }
 
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        // Sprawdzenie czy email już istnieje
+        $existingUser = $this->userRepository->getUser($email);
+        if ($existingUser) {
+            return $this->render('register', ['messages' => ['Ten email jest już zajęty']]);
+        }
 
-        // Dodajemy nowego użytkownika do naszej "bazy"
-        self::$users[] = [
-            'email' => $email,
-            'password' => $hashedPassword,
-            'first_name' => $firstName
-        ];
+        // Dodanie użytkownika do bazy danych
+        try {
+            $this->userRepository->addUser($email, $password, $firstName, $lastName);
+            return $this->redirect('/login');
+        } catch (Exception $e) {
+            return $this->render('register', ['messages' => ['Błąd podczas rejestracji. Spróbuj ponownie.']]);
+        }
+    }
 
-        // Przekierowujemy do logowania po pomyślnej rejestracji
+    public function logout()
+    {
+        session_unset();
+        session_destroy();
+        
         return $this->redirect('/login');
     }
 }
