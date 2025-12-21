@@ -1,94 +1,170 @@
 <?php
 
 require_once 'AppController.php';
-require_once __DIR__.'/../repository/UserRepository.php';
+require_once __DIR__ . '/../repository/UserRepository.php';
 
+/**
+ * Security Controller
+ * Handles authentication: login, register, logout
+ */
 class SecurityController extends AppController
 {
     private UserRepository $userRepository;
 
     public function __construct()
     {
-        //parent::__construct();
-        $this->userRepository = new UserRepository();
+        parent::__construct();
+        $this->userRepository = UserRepository::getInstance();
     }
 
-    public function login()
+    /**
+     * Handle login
+     */
+    public function login(): void
     {
-        if (!$this->isPost()) {
-            return $this->render('login');
+        if ($this->isGet()) {
+            $this->render('login');
+            return;
         }
 
-        $email = $_POST['email'] ?? '';
+        // Validate CSRF
+        if (!$this->validateCsrf()) {
+            $this->render('login', ['error' => 'Nieprawidłowe żądanie. Odśwież stronę i spróbuj ponownie.']);
+            return;
+        }
+
+        $email = $this->sanitize($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
 
+        // Validate input
         if (empty($email) || empty($password)) {
-            return $this->render('login', ['messages' => ['Wypełnij wszystkie pola!']]);
+            $this->render('login', ['error' => 'Wypełnij wszystkie pola']);
+            return;
         }
 
-        $user = $this->userRepository->getUser($email);
-
-        if (!$user) {
-            return $this->render('login', ['messages' => ['Nieprawidłowy email lub hasło']]);
+        // Validate email format
+        if (!$this->isValidEmail($email)) {
+            $this->render('login', ['error' => 'Nieprawidłowy format email']);
+            return;
         }
 
-        // Weryfikacja hasła
-        if (!$user->verifyPassword($password)) {
-            return $this->render('login', ['messages' => ['Nieprawidłowy email lub hasło']]);
+        // Limit input length
+        if (strlen($email) > 255 || strlen($password) > 255) {
+            $this->render('login', ['error' => 'Nieprawidłowe dane wejściowe']);
+            return;
         }
 
-        $_SESSION['user_email'] = $user->getEmail();
-        $_SESSION['user_name'] = $user->getName();
+        // Get user from database
+        $user = $this->userRepository->getUserByEmail($email);
 
-        return $this->redirect('/dashboard');
+        // Use consistent error message to prevent email enumeration
+        if (!$user || !$user->verifyPassword($password)) {
+            $this->render('login', ['error' => 'Nieprawidłowy email lub hasło']);
+            return;
+        }
+
+        // Login successful - set session
+        AuthMiddleware::login([
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'name' => $user->getName(),
+            'surname' => $user->getSurname()
+        ]);
+
+        $this->redirect('/dashboard');
     }
 
-    public function register()
+    /**
+     * Handle registration
+     */
+    public function register(): void
     {
-        if (!$this->isPost()) {
-            return $this->render('register');
+        if ($this->isGet()) {
+            $this->render('register');
+            return;
         }
 
-        $email = trim($_POST['email'] ?? '');
+        // Validate CSRF
+        if (!$this->validateCsrf()) {
+            $this->render('register', ['error' => 'Nieprawidłowe żądanie. Odśwież stronę i spróbuj ponownie.']);
+            return;
+        }
+
+        $email = $this->sanitize($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
-        $passwordRepeat = $_POST['password_repeat'] ?? '';
-        $firstName = $_POST['firstname'] ?? '';
-        $lastName = $_POST['lastname'] ?? '';
+        $passwordConfirm = $_POST['password_confirm'] ?? '';
+        $name = $this->sanitize($_POST['name'] ?? '');
+        $surname = $this->sanitize($_POST['surname'] ?? '');
 
-        if (empty($email) || empty($password) || empty($passwordRepeat) || empty($firstName) || empty($lastName)) {
-            return $this->render('register', ['messages' => ['Wypełnij wszystkie pola!']]);
+        // Validate required fields
+        if (empty($email) || empty($password) || empty($passwordConfirm) || empty($name) || empty($surname)) {
+            $this->render('register', ['error' => 'Wypełnij wszystkie pola']);
+            return;
         }
 
-        // Walidacja hasła
-        if ($password !== $passwordRepeat) {
-            return $this->render('register', ['messages' => ['Hasła nie są identyczne!']]);
+        // Validate email format
+        if (!$this->isValidEmail($email)) {
+            $this->render('register', ['error' => 'Nieprawidłowy format email']);
+            return;
         }
 
-        // Walidacja email
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return $this->render('register', ['messages' => ['Niepoprawny format email!']]);
+        // Validate input lengths
+        if (strlen($email) > 255 || strlen($name) > 100 || strlen($surname) > 100) {
+            $this->render('register', ['error' => 'Dane wejściowe są za długie']);
+            return;
         }
 
-        // Sprawdzenie czy email już istnieje
-        $existingUser = $this->userRepository->getUser($email);
-        if ($existingUser) {
-            return $this->render('register', ['messages' => ['Ten email jest już zajęty']]);
+        // Validate name and surname (only letters, Polish characters, spaces, hyphens)
+        if (!preg_match('/^[\p{L}\s\-]{2,}$/u', $name) || !preg_match('/^[\p{L}\s\-]{2,}$/u', $surname)) {
+            $this->render('register', ['error' => 'Imię i nazwisko mogą zawierać tylko litery (min. 2 znaki)']);
+            return;
         }
 
-        // Dodanie użytkownika do bazy danych
+        // Validate password
+        if (strlen($password) < 8) {
+            $this->render('register', ['error' => 'Hasło musi mieć minimum 8 znaków']);
+            return;
+        }
+
+        // Check password complexity
+        if (!preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) || !preg_match('/[0-9]/', $password)) {
+            $this->render('register', ['error' => 'Hasło musi zawierać wielką literę, małą literę i cyfrę']);
+            return;
+        }
+
+        // Validate password confirmation
+        if ($password !== $passwordConfirm) {
+            $this->render('register', ['error' => 'Hasła nie są identyczne']);
+            return;
+        }
+
+        // Check if email already exists
+        if ($this->userRepository->emailExists($email)) {
+            $this->render('register', ['error' => 'Ten adres email jest już zarejestrowany']);
+            return;
+        }
+
+        // Create user
         try {
-            $this->userRepository->addUser($email, $password, $firstName, $lastName);
-            return $this->redirect('/login');
+            $result = $this->userRepository->createUser($email, $password, $name, $surname);
+            
+            if ($result) {
+                $this->redirect('/login?registered=1');
+            } else {
+                $this->render('register', ['error' => 'Błąd podczas rejestracji. Spróbuj ponownie.']);
+            }
         } catch (Exception $e) {
-            return $this->render('register', ['messages' => ['Błąd podczas rejestracji. Spróbuj ponownie.']]);
+            error_log("Registration error: " . $e->getMessage());
+            $this->render('register', ['error' => 'Wystąpił błąd. Spróbuj ponownie później.']);
         }
     }
 
-    public function logout()
+    /**
+     * Handle logout
+     */
+    public function logout(): void
     {
-        session_unset();
-        session_destroy();
-        
-        return $this->redirect('/login');
+        AuthMiddleware::logout();
+        $this->redirect('/login');
     }
 }
