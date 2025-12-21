@@ -1,24 +1,37 @@
 <?php
 
-class User {
+/**
+ * User Model
+ * Represents a user entity
+ */
+class User 
+{
+    private int $id;
     private string $email;
-    private string $password;
-    private string $name;
-    private string $surname;
-    private ?string $phone;
+    private string $passwordHash;
+    private ?string $name;
+    private ?string $surname;
+    private ?string $createdAt;
 
     public function __construct(
+        int $id,
         string $email,
-        string $password,
-        string $name,
-        string $surname,
-        ?string $phone = null
+        string $passwordHash,
+        ?string $name = null,
+        ?string $surname = null,
+        ?string $createdAt = null
     ) {
+        $this->id = $id;
         $this->email = $email;
-        $this->password = $password;
+        $this->passwordHash = $passwordHash;
         $this->name = $name;
         $this->surname = $surname;
-        $this->phone = $phone;
+        $this->createdAt = $createdAt;
+    }
+
+    public function getId(): int 
+    {
+        return $this->id;
     }
 
     public function getEmail(): string 
@@ -26,48 +39,39 @@ class User {
         return $this->email;
     }
 
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    public function getName(): string
+    public function getName(): ?string 
     {
         return $this->name;
     }
 
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-    public function getSurname(): string
+    public function getSurname(): ?string 
     {
         return $this->surname;
     }
 
-    public function setSurname(string $surname): void
+    public function getFullName(): string 
     {
-        $this->surname = $surname;
+        return trim(($this->name ?? '') . ' ' . ($this->surname ?? ''));
     }
 
-    public function getPhone(): ?string
+    public function getCreatedAt(): ?string 
     {
-        return $this->phone;
+        return $this->createdAt;
     }
 
-    public function setPhone(?string $phone): void
+    public function verifyPassword(string $password): bool 
     {
-        $this->phone = $phone;
+        return password_verify($password, $this->passwordHash);
     }
 
-    public function verifyPassword(string $password): bool
+    public function toArray(): array 
     {
-        return password_verify($password, $this->password);
-    }
-
-    public function getFullName(): string
-    {
-        return $this->name . ' ' . $this->surname;
+        return [
+            'id' => $this->id,
+            'email' => $this->email,
+            'name' => $this->name,
+            'surname' => $this->surname,
+            'created_at' => $this->createdAt
+        ];
     }
 }
