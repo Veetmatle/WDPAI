@@ -1,55 +1,59 @@
 <?php
 
-require_once 'AppController.php';
-require_once __DIR__.'/../repository/UserRepository.php';
+require_once __DIR__ . '/AppController.php';
+require_once __DIR__ . '/../repository/ReceiptRepository.php';
+require_once __DIR__ . '/../repository/BudgetRepository.php';
+require_once __DIR__ . '/../repository/UserRepository.php';
 
 class DashboardController extends AppController
 {
-    public function index()
-    {
-        // Sprawdź czy user jest zalogowany
-        if (!isset($_SESSION['user_email'])) {
-            return $this->redirect('/login');
-        }
+    private ReceiptRepository $receiptRepository;
+    private BudgetRepository $budgetRepository;
+    private UserRepository $userRepository;
 
-        $cards = [
-            [
-                'id' => 1,
-                'title' => 'Ace of Spades',
-                'subtitle' => 'Legendary card',
-                'imageUrlPath' => 'https://deckofcardsapi.com/static/img/AS.png',
-                'href' => '/cards/ace-of-spades'
-            ],
-            [
-                'id' => 2,
-                'title' => 'Queen of Hearts',
-                'subtitle' => 'Classic romance',
-                'imageUrlPath' => 'https://deckofcardsapi.com/static/img/QH.png',
-                'href' => '/cards/queen-of-hearts'
-            ],
-            [
-                'id' => 3,
-                'title' => 'King of Clubs',
-                'subtitle' => 'Royal strength',
-                'imageUrlPath' => 'https://deckofcardsapi.com/static/img/KC.png',
-                'href' => '/cards/king-of-clubs'
-            ],
-            [
-                'id' => 4,
-                'title' => 'Jack of Diamonds',
-                'subtitle' => 'Sly and sharp',
-                'imageUrlPath' => 'https://deckofcardsapi.com/static/img/JD.png',
-                'href' => '/cards/jack-of-diamonds'
-            ],
-            [
-                'id' => 5,
-                'title' => 'Ten of Hearts',
-                'subtitle' => 'Lucky draw',
-                'imageUrlPath' => 'https://deckofcardsapi.com/static/img/0H.png',
-                'href' => '/cards/ten-of-hearts'
-            ],
+    public function __construct()
+    {
+        parent::__construct();
+        $this->receiptRepository = ReceiptRepository::getInstance();
+        $this->budgetRepository = BudgetRepository::getInstance();
+        $this->userRepository = UserRepository::getInstance();
+    }
+
+    public function index(): void
+    {
+        $this->requireLogin();
+        $userId = $_SESSION['user_id'];
+        
+        $currentMonth = (int)date('n');
+        $currentYear = (int)date('Y');
+
+        // Pobierz dane użytkownika - konwertuj obiekt na tablicę
+        $userObj = $this->userRepository->getUserById($userId);
+        $user = $userObj ? $userObj->toArray() : [
+            'name' => $_SESSION['user_name'] ?? 'Użytkownik',
+            'surname' => $_SESSION['user_surname'] ?? '',
+            'email' => $_SESSION['user_email'] ?? ''
         ];
 
-        return $this->render('dashboard', ['items' => $cards]);
+        // Suma wydatków w bieżącym miesiącu
+        $monthlyTotal = $this->receiptRepository->getMonthlyTotal($userId, $currentMonth, $currentYear);
+
+        // Budżet na bieżący miesiąc
+        $budget = $this->budgetRepository->getBudget($userId, $currentMonth, $currentYear);
+
+        // Ostatnie transakcje (max 3)
+        $recentReceipts = $this->receiptRepository->getRecentReceipts($userId, 3);
+
+        // Podsumowanie wydatków z ostatnich 4 miesięcy
+        $expensesSummary = $this->receiptRepository->getExpensesSummary($userId, 4);
+
+        $this->render('dashboard', [
+            'user' => $user,
+            'monthlyTotal' => $monthlyTotal,
+            'budget' => $budget,
+            'recentReceipts' => $recentReceipts,
+            'expensesSummary' => $expensesSummary,
+            'activePage' => 'dashboard'
+        ]);
     }
 }
