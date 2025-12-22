@@ -1,7 +1,9 @@
-FROM postgres
+FROM postgres:15
 
-ENV POSTGRES_PASSWORD docker
-ENV POSTGRES_DB db
-ENV POSTGRES_USER docker
+ENV POSTGRES_USER=docker
+ENV POSTGRES_PASSWORD=docker
+ENV POSTGRES_DB=db
 
-COPY . /app/database
+COPY docker/db/init.sql /docker-entrypoint-initdb.d/
+
+EXPOSE 5432
