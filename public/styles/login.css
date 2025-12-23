@@ -1,92 +1,304 @@
-h1 {
-    color: coral;
-}
+/**
+ * Smart Expense Tracker - Login Page Styles
+ */
 
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f0f2f5;
-}
-
-
-.login-wrapper {
+.login-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%; 
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: var(--spacing-4);
+    font-family: var(--font-display);
 }
 
-form {
-    background-color: bisque;
-    border-radius: 1rem;
-    padding: 2rem;
-
+/* Logo Section */
+.login-logo-section {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
-    
-    width: 90%;
-    max-width: 350px; 
-    box-sizing: border-box; 
-}
-
-button {
-    background: linear-gradient(135deg, #ff7f50, #ff6347);
-    border: none;
-    border-radius: 0.5rem;
-    padding: 0.5rem 1rem;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-    margin-top: 0.5rem;
-}
-
-button:hover {
-    transform: scale(1.1);
-}
-
-input {
-    padding: 0.5rem;
-    margin: 0.3rem 0;
-    border: 1px solid #ccc;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), 
-                inset 0 1px 2px rgba(0, 0, 0, 0.06);
-    width: 100%;
-    box-sizing: border-box;
-}
-
-input:focus {
-    outline: none;
-    border-color: coral;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), 
-                0 0 0 3px rgba(255, 127, 80, 0.1);
-}
-
-
-.message {
-    width: 90%;
-    max-width: 350px; 
-    box-sizing: border-box;
-    
-    padding: 1rem;
-    margin-top: 1.5rem; 
-    
-    background-color: #ffebee; 
-    color: #c62828; 
-    border: 1px solid #e57373; 
-    border-radius: 0.5rem;
-    
     text-align: center;
-    font-family: Arial, sans-serif;
+    margin-bottom: var(--spacing-8);
+    width: 100%;
+    max-width: 24rem;
+}
+
+.login-logo-icon {
+    width: 4.5rem;
+    height: 4.5rem;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-4);
+    box-shadow: var(--shadow-primary);
+}
+
+.login-logo-icon .material-symbols-outlined {
+    font-size: 36px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.login-title {
+    color: var(--color-text-primary);
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    margin: 0;
+}
+
+.login-subtitle {
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    margin-top: var(--spacing-2);
+}
+
+/* Form */
+.login-form {
+    width: 100%;
+    max-width: 24rem;
+}
+
+/* Input Groups */
+.login-input-group {
+    margin-bottom: var(--spacing-4);
+}
+
+.login-label {
+    display: block;
+    color: var(--color-text-primary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding-bottom: var(--spacing-2);
+}
+
+.login-input-wrapper {
+    position: relative;
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.login-input-icon {
+    position: absolute;
+    left: var(--spacing-4);
+    color: var(--color-text-secondary);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.login-input {
+    width: 100%;
+    height: 3.5rem;
+    padding: 0 var(--spacing-4);
+    background-color: var(--color-surface-dark);
+    border: 1px solid var(--color-input-border-dark);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-primary);
+    font-size: 1rem;
+    transition: var(--transition-colors);
+}
+
+.login-input-wrapper .login-input {
+    padding-left: 3rem;
+}
+
+.login-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.login-input::placeholder {
+    color: var(--color-text-secondary);
+}
+
+.login-input-password {
+    padding-right: 3rem;
+}
+
+/* Password Toggle Button */
+.login-password-toggle {
+    position: absolute;
+    right: 0;
+    height: 3.5rem;
+    width: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-secondary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-colors);
+}
+
+.login-password-toggle:hover {
+    color: var(--color-text-primary);
+}
+
+/* Submit Button */
+.login-submit-wrapper {
+    margin-top: var(--spacing-6);
+}
+
+.login-submit-btn {
+    width: 100%;
+    height: 3.5rem;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: white;
     font-weight: 600;
-    
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    font-size: 1rem;
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-primary);
+}
+
+.login-submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 20px -5px rgba(59, 130, 246, 0.4);
+}
+
+.login-submit-btn:active {
+    transform: translateY(0);
+}
+
+/* Field Errors */
+.login-field-error {
+    display: block;
+    color: #F87171;
+    font-size: 0.75rem;
+    margin-top: var(--spacing-1);
+}
+
+.login-input-group.has-error .login-input {
+    border-color: #F87171;
+}
+
+/* Divider */
+.login-divider {
+    display: flex;
+    align-items: center;
+    margin: var(--spacing-6) 0;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+.login-divider::before,
+.login-divider::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid var(--color-input-border-dark);
+}
+
+.login-divider span {
+    padding: 0 var(--spacing-4);
+}
+
+/* Register Link */
+.login-register-link {
+    text-align: center;
+}
+
+.login-register-link p {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.login-register-link a {
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: var(--transition-colors);
+}
+
+.login-register-link a:hover {
+    color: var(--color-primary-light);
+    text-decoration: underline;
+}
+
+/* Demo Credentials Box */
+.login-demo-box {
+    margin-top: var(--spacing-8);
+    padding: var(--spacing-4);
+    background-color: var(--color-surface-dark);
+    border: 1px solid var(--color-input-border-dark);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 24rem;
+    text-align: center;
+}
+
+.login-demo-label {
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
+    margin-bottom: var(--spacing-1);
+}
+
+.login-demo-credentials {
+    color: var(--color-text-primary);
+    font-size: 0.875rem;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    background-color: var(--color-background-dark);
+    padding: var(--spacing-2) var(--spacing-3);
+    border-radius: var(--radius-sm);
+    display: inline-block;
+}
+
+/* Messages */
+.login-message {
+    width: 100%;
+    max-width: 24rem;
+    margin-bottom: var(--spacing-4);
+    padding: var(--spacing-4);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.login-message p {
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.login-message-success {
+    background-color: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.login-message-success p {
+    color: #4ADE80;
+}
+
+.login-message-error {
+    background-color: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.login-message-error p {
+    color: #F87171;
+}
+
+/* Field Error */
+.login-field-error {
+    display: block;
+    color: var(--color-danger);
+    font-size: 0.75rem;
+    margin-top: var(--spacing-1);
+}
+
+.login-input-wrapper.has-error .login-input {
+    border-color: var(--color-danger);
 }

@@ -1,0 +1,97 @@
+/**
+ * Bottom Navigation Component Styles
+ */
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--color-surface-dark);
+    border-top: 1px solid var(--color-border);
+    z-index: 50;
+}
+
+.bottom-nav-container {
+    max-width: 32rem;
+    margin: 0 auto;
+    padding: 0 var(--spacing-4);
+}
+
+.bottom-nav-items {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 4rem;
+    position: relative;
+}
+
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-2) var(--spacing-3);
+    min-width: 60px;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: var(--transition-colors);
+}
+
+.bottom-nav-item:hover {
+    color: var(--color-primary);
+}
+
+.bottom-nav-item.active {
+    color: var(--color-primary);
+}
+
+.bottom-nav-item .material-symbols-outlined {
+    font-size: 24px;
+}
+
+.bottom-nav-label {
+    font-size: 0.75rem;
+    margin-top: var(--spacing-1);
+    font-weight: 500;
+}
+
+.bottom-nav-item.active .bottom-nav-label {
+    font-weight: 700;
+}
+
+/* Center Add Button */
+.bottom-nav-add-btn {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-primary);
+    transition: var(--transition-colors);
+    text-decoration: none;
+}
+
+.bottom-nav-add-btn:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.bottom-nav-add-btn.active {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.bottom-nav-add-btn .material-symbols-outlined {
+    font-size: 24px;
+}
+
+/* Spacer for center button */
+.bottom-nav-spacer {
+    width: 60px;
+}
