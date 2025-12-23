@@ -1,0 +1,148 @@
+/**
+ * Calendar Page Styles
+ */
+
+.calendar-wrapper {
+    position: relative;
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    flex-direction: column;
+    overflow-x: hidden;
+    padding-bottom: 6rem;
+}
+
+/* Header */
+.calendar-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-4);
+    padding-bottom: var(--spacing-2);
+    background-color: var(--color-background-dark);
+}
+
+.calendar-nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    width: 48px;
+    color: var(--color-text-primary);
+    border-radius: var(--radius-lg);
+    transition: var(--transition-colors);
+}
+
+.calendar-nav-btn:hover {
+    background-color: var(--color-surface-dark);
+}
+
+.calendar-nav-btn .material-symbols-outlined {
+    font-size: 24px;
+}
+
+.calendar-month-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    flex: 1;
+    text-align: center;
+}
+
+/* Main */
+.calendar-main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 0 var(--spacing-4);
+    padding-top: var(--spacing-2);
+}
+
+/* Weekdays */
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+}
+
+.calendar-weekday {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--color-text-secondary);
+}
+
+/* Calendar Grid */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    flex: 1;
+    gap: 4px;
+}
+
+.calendar-day {
+    min-height: 80px;
+    border-radius: var(--radius-lg);
+    transition: var(--transition-colors);
+    text-decoration: none;
+}
+
+.calendar-day:hover {
+    background-color: var(--color-surface-dark);
+}
+
+.calendar-day.other-month {
+    opacity: 0.4;
+}
+
+.calendar-day-content {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: var(--spacing-1);
+    padding-top: var(--spacing-2);
+}
+
+.calendar-day-number {
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+}
+
+.calendar-day.other-month .calendar-day-number {
+    color: var(--color-text-secondary);
+}
+
+/* Today Badge */
+.calendar-day-today {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    width: 32px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.calendar-day-today span {
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+/* Expense Amount */
+.calendar-day-expense {
+    margin-top: var(--spacing-1);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-danger);
+}
