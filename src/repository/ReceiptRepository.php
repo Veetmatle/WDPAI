@@ -377,9 +377,14 @@ class ReceiptRepository extends Repository
                 COALESCE(c.name, \'Bez kategorii\') as category_name,
                 COALESCE(c.icon_name, \'category\') as icon_name,
                 COALESCE(c.color_hex, \'#64748B\') as color_hex,
-                SUM(ri.price * ri.quantity) as total
+                SUM(
+                    CASE 
+                        WHEN ri.id IS NOT NULL THEN ri.price * ri.quantity
+                        ELSE r.total_amount
+                    END
+                ) as total
             FROM receipts r
-            JOIN receipt_items ri ON ri.receipt_id = r.id
+            LEFT JOIN receipt_items ri ON ri.receipt_id = r.id
             LEFT JOIN categories c ON c.id = ri.category_id
             WHERE r.user_id = :user_id
               AND EXTRACT(MONTH FROM r.receipt_date) = :month
@@ -413,9 +418,14 @@ class ReceiptRepository extends Repository
                 SELECT 
                     COALESCE(c.name, \'Bez kategorii\') as category_name,
                     COALESCE(c.color_hex, \'#64748B\') as color_hex,
-                    SUM(ri.price * ri.quantity) as total
+                    SUM(
+                        CASE 
+                            WHEN ri.id IS NOT NULL THEN ri.price * ri.quantity
+                            ELSE r.total_amount
+                        END
+                    ) as total
                 FROM receipts r
-                JOIN receipt_items ri ON ri.receipt_id = r.id
+                LEFT JOIN receipt_items ri ON ri.receipt_id = r.id
                 LEFT JOIN categories c ON c.id = ri.category_id
                 WHERE r.user_id = :user_id
                   AND EXTRACT(MONTH FROM r.receipt_date) = :month

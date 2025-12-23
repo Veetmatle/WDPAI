@@ -11,14 +11,6 @@ class OCRService
      */
     public function processReceipt(string $imagePath): array
     {
-        // In a real implementation, this would:
-        // 1. Send the image to an OCR API
-        // 2. Parse the returned text
-        // 3. Extract store name, items, prices, date, total
-        
-        // For this demo, simulate OCR by returning sample data
-        // that the user can review and modify before saving
-        
         return $this->simulateOCRResult();
     }
 
@@ -148,54 +140,4 @@ class OCRService
         
         return $text;
     }
-
-    /**
-     * Real OCR implementation placeholder
-     */
-    /*
-    private function callOCRAPI(string $imagePath): array
-    {
-        // Example using OCR.space API
-        $apiKey = getenv('OCR_API_KEY');
-        $url = 'https://api.ocr.space/parse/image';
-        
-        $imageData = base64_encode(file_get_contents($imagePath));
-        
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, [
-            'apikey' => $apiKey,
-            'base64Image' => 'data:image/jpeg;base64,' . $imageData,
-            'language' => 'pol',
-            'isTable' => 'true'
-        ]);
-        
-        $response = curl_exec($ch);
-        curl_close($ch);
-        
-        $result = json_decode($response, true);
-        
-        if (isset($result['ParsedResults'][0]['ParsedText'])) {
-            return $this->parseOCRText($result['ParsedResults'][0]['ParsedText']);
-        }
-        
-        throw new Exception('OCR processing failed');
-    }
-    
-    private function parseOCRText(string $text): array
-    {
-        // Parse the OCR text to extract:
-        // - Store name (usually at the top)
-        // - Date
-        // - Individual items with prices
-        // - Total amount
-        
-        // This would require sophisticated regex and NLP
-        // to handle various receipt formats
-        
-        return [];
-    }
-    */
 }

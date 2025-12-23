@@ -83,7 +83,7 @@ class ExpenseController extends AppController
 
         // Handle form submission
         if ($this->isPost()) {
-            $this->handleAddExpense($userId);
+            $this->handleAddExpenseForm($userId);
             return;
         }
 
@@ -101,6 +101,102 @@ class ExpenseController extends AppController
             'categories' => $categories,
             'budget' => $budget
         ]);
+    }
+
+    /**
+     * Handle expense form submission (non-API - redirect)
+     */
+    private function handleAddExpenseForm(int $userId): void
+    {
+        // Validate CSRF
+        if (!$this->validateCsrf()) {
+            $_SESSION['error'] = 'Nieprawidłowe żądanie (CSRF)';
+            header('Location: /add-expense');
+            exit;
+        }
+
+        $storeName = $this->sanitize($_POST['store_name'] ?? '');
+        $date = $_POST['receipt_date'] ?? $_POST['date'] ?? date('Y-m-d');
+        $totalAmount = (float) ($_POST['total_amount'] ?? 0);
+        $notes = $this->sanitize($_POST['notes'] ?? '');
+        $items = $_POST['items'] ?? [];
+
+        // Validate required fields
+        if (empty($storeName)) {
+            $_SESSION['error'] = 'Podaj nazwę sklepu';
+            header('Location: /add-expense');
+            exit;
+        }
+
+        if ($totalAmount <= 0 && empty($items)) {
+            $_SESSION['error'] = 'Podaj kwotę lub dodaj produkty';
+            header('Location: /add-expense');
+            exit;
+        }
+
+        // Validate date
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            $_SESSION['error'] = 'Nieprawidłowy format daty';
+            header('Location: /add-expense');
+            exit;
+        }
+
+        try {
+            // Handle file upload if present
+            $imagePath = null;
+            if (isset($_FILES['receipt_image']) && $_FILES['receipt_image']['error'] === UPLOAD_ERR_OK) {
+                $imagePath = $this->handleFileUpload($_FILES['receipt_image']);
+            }
+
+            // Calculate total from items if items provided
+            if (!empty($items) && is_array($items)) {
+                $calculatedTotal = 0;
+                foreach ($items as $item) {
+                    if (!empty($item['name']) && isset($item['price'])) {
+                        $price = (float) $item['price'];
+                        $quantity = isset($item['quantity']) ? (int) $item['quantity'] : 1;
+                        $calculatedTotal += $price * $quantity;
+                    }
+                }
+                if ($calculatedTotal > 0 && $totalAmount <= 0) {
+                    $totalAmount = $calculatedTotal;
+                }
+            }
+
+            // Create receipt
+            $receiptId = $this->receiptRepository->createReceipt(
+                $userId,
+                $storeName,
+                $date,
+                $totalAmount,
+                $imagePath,
+                $notes ?: null
+            );
+
+            // Add items if provided
+            if (!empty($items) && is_array($items)) {
+                foreach ($items as $item) {
+                    if (!empty($item['name']) && isset($item['price'])) {
+                        $this->receiptRepository->addReceiptItem(
+                            $receiptId,
+                            $this->sanitize($item['name']),
+                            (float) $item['price'],
+                            !empty($item['category_id']) ? (int) $item['category_id'] : null,
+                            isset($item['quantity']) ? (int) $item['quantity'] : 1
+                        );
+                    }
+                }
+            }
+
+            $_SESSION['success'] = 'Wydatek został dodany pomyślnie';
+            header('Location: /receipt?id=' . $receiptId);
+            exit;
+        } catch (Exception $e) {
+            error_log("Error adding expense: " . $e->getMessage());
+            $_SESSION['error'] = 'Błąd podczas zapisywania: ' . $e->getMessage();
+            header('Location: /add-expense');
+            exit;
+        }
     }
 
     /**
