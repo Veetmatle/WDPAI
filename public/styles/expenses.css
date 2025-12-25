@@ -1,0 +1,178 @@
+/**
+ * Expenses List Page Styles
+ */
+
+.expenses-wrapper {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: var(--spacing-4);
+    padding-bottom: 6rem;
+}
+
+/* Header */
+.expenses-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
+}
+
+.expenses-back-btn {
+    padding: var(--spacing-2);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface-dark);
+    color: var(--color-text-primary);
+    transition: var(--transition-colors);
+}
+
+.expenses-back-btn:hover {
+    background-color: var(--color-surface-hover);
+}
+
+.expenses-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+/* Expenses List */
+.expenses-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+}
+
+/* Day Group */
+.expenses-day-group {
+    background-color: var(--color-surface-dark);
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+}
+
+.expenses-day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-4);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.expenses-day-name {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.expenses-day-date {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.expenses-day-total {
+    text-align: right;
+}
+
+.expenses-day-total p {
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* Receipt List */
+.expenses-receipt-list {
+    list-style: none;
+}
+
+.expenses-receipt-list li {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.expenses-receipt-list li:last-child {
+    border-bottom: none;
+}
+
+.expenses-receipt-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+    padding: var(--spacing-4);
+    transition: var(--transition-colors);
+    text-decoration: none;
+}
+
+.expenses-receipt-item:hover {
+    background-color: var(--color-surface-hover);
+}
+
+.expenses-receipt-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    background-color: rgba(59, 130, 246, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.expenses-receipt-icon .material-symbols-outlined {
+    color: var(--color-primary);
+}
+
+.expenses-receipt-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.expenses-receipt-name {
+    font-weight: 500;
+    color: var(--color-text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.expenses-receipt-notes {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.expenses-receipt-amount {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.expenses-receipt-amount p {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.expenses-receipt-arrow {
+    color: var(--color-text-secondary);
+}
+
+/* Empty State */
+.expenses-empty {
+    background-color: var(--color-surface-dark);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-8);
+    text-align: center;
+    color: var(--color-text-secondary);
+}
+
+.expenses-empty .material-symbols-outlined {
+    font-size: 48px;
+    margin-bottom: var(--spacing-3);
+}
+
+.expenses-empty-title {
+    font-size: 1.125rem;
+    margin-bottom: var(--spacing-2);
+    color: var(--color-text-primary);
+}
+
+.expenses-empty-text {
+    font-size: 0.875rem;
+    margin-bottom: var(--spacing-4);
+}

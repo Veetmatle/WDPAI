@@ -1,0 +1,290 @@
+/**
+ * Smart Expense Tracker - Register Page Styles
+ */
+
+.register-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: var(--spacing-4) var(--spacing-4) var(--spacing-8);
+    font-family: var(--font-display);
+}
+
+/* Logo Section */
+.register-logo-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: var(--spacing-6);
+    width: 100%;
+    max-width: 24rem;
+}
+
+.register-logo-icon {
+    width: 4.5rem;
+    height: 4.5rem;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-4);
+    box-shadow: var(--shadow-primary);
+}
+
+.register-logo-icon .material-symbols-outlined {
+    font-size: 36px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.register-title {
+    color: var(--color-text-primary);
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    margin: 0;
+}
+
+.register-subtitle {
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    margin-top: var(--spacing-2);
+}
+
+/* Error Message */
+.register-error {
+    width: 100%;
+    max-width: 24rem;
+    margin-bottom: var(--spacing-4);
+    padding: var(--spacing-4);
+    background-color: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    border-radius: var(--radius-lg);
+}
+
+.register-error p {
+    color: #F87171;
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+/* Form */
+.register-form {
+    width: 100%;
+    max-width: 24rem;
+}
+
+/* Name Row (2 columns) */
+.register-name-row {
+    display: flex;
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-4);
+}
+
+.register-name-row > div {
+    flex: 1;
+}
+
+/* Input Groups */
+.register-input-group {
+    margin-bottom: var(--spacing-4);
+}
+
+.register-name-row .register-input-group {
+    margin-bottom: 0;
+}
+
+.register-label {
+    display: block;
+    color: var(--color-text-primary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding-bottom: var(--spacing-2);
+}
+
+.register-input-wrapper {
+    position: relative;
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.register-input-icon {
+    position: absolute;
+    left: var(--spacing-4);
+    color: var(--color-text-secondary);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.register-input {
+    width: 100%;
+    height: 3rem;
+    padding: 0 var(--spacing-4);
+    background-color: var(--color-surface-dark);
+    border: 1px solid var(--color-input-border-dark);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-primary);
+    font-size: 1rem;
+    transition: var(--transition-colors);
+}
+
+.register-input-with-icon {
+    padding-left: 3rem;
+}
+
+.register-input-password {
+    padding-right: 3rem;
+}
+
+.register-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.register-input::placeholder {
+    color: var(--color-text-secondary);
+}
+
+/* Password Toggle Button */
+.register-password-toggle {
+    position: absolute;
+    right: 0;
+    height: 3rem;
+    width: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-secondary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-colors);
+}
+
+.register-password-toggle:hover {
+    color: var(--color-text-primary);
+}
+
+/* Password Strength Indicator */
+.register-password-strength {
+    margin-top: var(--spacing-2);
+}
+
+.register-password-strength.hidden {
+    display: none;
+}
+
+.register-strength-bars {
+    display: flex;
+    gap: var(--spacing-1);
+    margin-bottom: var(--spacing-1);
+}
+
+.register-strength-bar {
+    height: 4px;
+    flex: 1;
+    border-radius: 2px;
+    background-color: var(--color-input-border-dark);
+    transition: background-color 0.2s;
+}
+
+.register-password-hint {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+/* Password Match Error */
+.register-match-error {
+    color: #F87171;
+    font-size: 0.75rem;
+    margin-top: var(--spacing-1);
+}
+
+.register-match-error.hidden {
+    display: none;
+}
+
+/* Field Errors */
+.register-field-error {
+    display: block;
+    color: #F87171;
+    font-size: 0.75rem;
+    margin-top: var(--spacing-1);
+}
+
+.register-input-wrapper.has-error .register-input,
+.register-input-group.has-error .register-input {
+    border-color: #F87171;
+}
+
+/* Submit Button */
+.register-submit-wrapper {
+    margin-top: var(--spacing-6);
+    margin-bottom: var(--spacing-4);
+}
+
+.register-submit-btn {
+    width: 100%;
+    height: 3.5rem;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-primary);
+}
+
+.register-submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 20px -5px rgba(59, 130, 246, 0.4);
+}
+
+.register-submit-btn:active {
+    transform: translateY(0);
+}
+
+.register-submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Login Link */
+.register-login-link {
+    text-align: center;
+}
+
+.register-login-link p {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.register-login-link a {
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: var(--transition-colors);
+}
+
+.register-login-link a:hover {
+    color: var(--color-primary-light);
+    text-decoration: underline;
+}

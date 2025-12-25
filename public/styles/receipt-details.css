@@ -1,0 +1,302 @@
+/**
+ * Receipt Details Page Styles
+ */
+
+.receipt-details-wrapper {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: var(--spacing-4);
+    padding-bottom: 6rem;
+}
+
+/* Header */
+.receipt-details-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
+}
+
+.receipt-details-back-btn {
+    padding: var(--spacing-2);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface-dark);
+    color: var(--color-text-primary);
+    transition: var(--transition-colors);
+}
+
+.receipt-details-back-btn:hover {
+    background-color: var(--color-surface-hover);
+}
+
+.receipt-details-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+/* Main Card */
+.receipt-details-main-card {
+    background-color: var(--color-surface-dark);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-6);
+    margin-bottom: var(--spacing-6);
+}
+
+.receipt-details-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-4);
+}
+
+.receipt-details-store-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.receipt-details-date {
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1);
+}
+
+.receipt-details-date .material-symbols-outlined {
+    font-size: 14px;
+}
+
+.receipt-details-total {
+    text-align: right;
+}
+
+.receipt-details-total p {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* Notes */
+.receipt-details-notes {
+    margin-top: var(--spacing-4);
+    padding: var(--spacing-3);
+    background-color: var(--color-surface-hover);
+    border-radius: var(--radius-lg);
+}
+
+.receipt-details-notes p {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1);
+}
+
+.receipt-details-notes .material-symbols-outlined {
+    font-size: 14px;
+}
+
+/* Image Link */
+.receipt-details-image-link {
+    margin-top: var(--spacing-4);
+}
+
+.receipt-details-image-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.receipt-details-image-link a:hover {
+    text-decoration: underline;
+}
+
+/* Products Card */
+.receipt-details-products-card {
+    background-color: var(--color-surface-dark);
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    margin-bottom: var(--spacing-6);
+}
+
+.receipt-details-products-header {
+    padding: var(--spacing-4);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.receipt-details-products-header h3 {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+/* Products List */
+.receipt-details-products-list {
+    list-style: none;
+}
+
+.receipt-details-products-list li {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.receipt-details-products-list li:last-child {
+    border-bottom: none;
+}
+
+.receipt-details-product-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-4);
+    transition: var(--transition-colors);
+}
+
+.receipt-details-product-item:hover {
+    background-color: var(--color-surface-hover);
+}
+
+.receipt-details-product-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+}
+
+.receipt-details-product-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.receipt-details-product-icon .material-symbols-outlined {
+    font-size: 20px;
+}
+
+.receipt-details-product-name {
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+.receipt-details-product-category {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.receipt-details-product-price {
+    text-align: right;
+}
+
+.receipt-details-product-unit-price {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.receipt-details-product-total-price {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+/* Products Summary */
+.receipt-details-products-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-4);
+    border-top: 1px solid var(--color-border);
+    background-color: var(--color-surface-hover);
+}
+
+.receipt-details-summary-label {
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+.receipt-details-summary-value {
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--color-text-primary);
+}
+
+/* Products Empty */
+.receipt-details-products-empty {
+    padding: var(--spacing-8);
+    text-align: center;
+    color: var(--color-text-secondary);
+}
+
+.receipt-details-products-empty .material-symbols-outlined {
+    font-size: 48px;
+    margin-bottom: var(--spacing-2);
+}
+
+.receipt-details-products-empty-hint {
+    font-size: 0.875rem;
+    margin-top: var(--spacing-1);
+}
+
+/* Actions */
+.receipt-details-actions {
+    display: flex;
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-3);
+}
+
+.receipt-details-action-btn {
+    flex: 1;
+    padding: var(--spacing-3);
+    border-radius: var(--radius-xl);
+    text-align: center;
+    font-weight: 500;
+    transition: var(--transition-colors);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    text-decoration: none;
+}
+
+.receipt-details-action-btn.primary {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.receipt-details-action-btn.primary:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.receipt-details-action-btn.secondary {
+    background-color: var(--color-surface-dark);
+    color: var(--color-text-primary);
+}
+
+.receipt-details-action-btn.secondary:hover {
+    background-color: var(--color-surface-hover);
+}
+
+/* Delete Button */
+.receipt-details-delete-btn {
+    width: 100%;
+    padding: var(--spacing-3);
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #F87171;
+    border-radius: var(--radius-xl);
+    font-weight: 500;
+    transition: var(--transition-colors);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    border: none;
+    cursor: pointer;
+}
+
+.receipt-details-delete-btn:hover {
+    background-color: rgba(239, 68, 68, 0.3);
+}

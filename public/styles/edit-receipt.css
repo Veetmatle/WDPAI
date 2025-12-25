@@ -1,0 +1,403 @@
+/**
+ * Edit Receipt Page Styles
+ */
+
+.edit-receipt-wrapper {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: var(--spacing-4);
+    padding-bottom: 6rem;
+}
+
+/* Header */
+.edit-receipt-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
+}
+
+.edit-receipt-back-btn {
+    padding: var(--spacing-2);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface-dark);
+    color: var(--color-text-primary);
+    transition: var(--transition-colors);
+    border: none;
+    cursor: pointer;
+}
+
+.edit-receipt-back-btn:hover {
+    background-color: var(--color-surface-hover);
+}
+
+.edit-receipt-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+/* Form */
+.edit-receipt-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+}
+
+/* Basic Info Card */
+.edit-receipt-card {
+    background-color: var(--color-surface-dark);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-6);
+}
+
+.edit-receipt-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-4);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+/* Form Grid */
+.edit-receipt-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4);
+}
+
+@media (max-width: 640px) {
+    .edit-receipt-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.edit-receipt-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+}
+
+.edit-receipt-form-group.full-width {
+    grid-column: span 2;
+}
+
+@media (max-width: 640px) {
+    .edit-receipt-form-group.full-width {
+        grid-column: span 1;
+    }
+}
+
+.edit-receipt-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+.edit-receipt-input,
+.edit-receipt-textarea {
+    width: 100%;
+    padding: var(--spacing-3);
+    background-color: var(--color-surface-hover);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-primary);
+    font-size: 1rem;
+    transition: var(--transition-colors);
+}
+
+.edit-receipt-input:focus,
+.edit-receipt-textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    background-color: var(--color-bg);
+}
+
+.edit-receipt-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Items Section */
+/* Form Field */
+.edit-receipt-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: var(--spacing-4);
+}
+
+/* Items Section */
+.edit-receipt-items-section {
+    background-color: var(--color-surface-dark);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-6);
+    margin-bottom: var(--spacing-4);
+}
+
+.edit-receipt-items-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+}
+
+.edit-receipt-no-items {
+    text-align: center;
+    padding: var(--spacing-6);
+    color: var(--color-text-secondary);
+    background-color: var(--color-surface-hover);
+    border-radius: var(--radius-xl);
+}
+
+.edit-receipt-no-items.hidden {
+    display: none;
+}
+
+/* Total Section */
+.edit-receipt-total-section {
+    background-color: var(--color-surface-dark);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-4);
+    margin-bottom: var(--spacing-4);
+}
+
+.edit-receipt-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.edit-receipt-total-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.edit-receipt-total-input {
+    width: 8rem;
+    padding: var(--spacing-3);
+    background-color: var(--color-surface-hover);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-primary);
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-align: right;
+}
+
+.edit-receipt-total-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.edit-receipt-total-currency {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+}
+
+.edit-receipt-items-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-4);
+}
+
+.edit-receipt-add-item-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1);
+    padding: var(--spacing-2) var(--spacing-3);
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-colors);
+}
+
+.edit-receipt-add-item-btn:hover {
+    background-color: var(--color-primary-dark);
+}
+
+/* Item Card */
+.edit-receipt-item-card {
+    background-color: var(--color-surface-hover);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-4);
+    margin-bottom: var(--spacing-3);
+    position: relative;
+}
+
+.edit-receipt-item-card:last-child {
+    margin-bottom: 0;
+}
+
+.edit-receipt-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-3);
+}
+
+.edit-receipt-item-number {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.edit-receipt-remove-item-btn {
+    padding: var(--spacing-1);
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #F87171;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition-colors);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-receipt-remove-item-btn:hover {
+    background-color: rgba(239, 68, 68, 0.3);
+}
+
+.edit-receipt-remove-item-btn .material-symbols-outlined {
+    font-size: 18px;
+}
+
+.edit-receipt-item-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: var(--spacing-3);
+}
+
+@media (max-width: 640px) {
+    .edit-receipt-item-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.edit-receipt-item-input {
+    width: 100%;
+    padding: var(--spacing-2);
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+    font-size: 0.875rem;
+}
+
+.edit-receipt-item-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.edit-receipt-item-label {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-1);
+    display: block;
+}
+
+/* Category Select */
+.edit-receipt-category-select {
+    width: 100%;
+    padding: var(--spacing-2);
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.edit-receipt-category-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+/* Total */
+.edit-receipt-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-4);
+    background-color: var(--color-surface-hover);
+    border-radius: var(--radius-xl);
+    margin-top: var(--spacing-4);
+}
+
+.edit-receipt-total-label {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.edit-receipt-total-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* Actions */
+.edit-receipt-actions {
+    display: flex;
+    gap: var(--spacing-3);
+}
+
+.edit-receipt-cancel-btn {
+    flex: 1;
+    padding: var(--spacing-3);
+    background-color: var(--color-surface-dark);
+    color: var(--color-text-primary);
+    border: none;
+    border-radius: var(--radius-xl);
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-colors);
+    text-decoration: none;
+    text-align: center;
+}
+
+.edit-receipt-cancel-btn:hover {
+    background-color: var(--color-surface-hover);
+}
+
+.edit-receipt-submit-btn {
+    flex: 2;
+    padding: var(--spacing-3);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    color: white;
+    border: none;
+    border-radius: var(--radius-xl);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-all);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+}
+
+.edit-receipt-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+/* Empty Items State */
+.edit-receipt-items-empty {
+    text-align: center;
+    padding: var(--spacing-8);
+    color: var(--color-text-secondary);
+}
+
+.edit-receipt-items-empty .material-symbols-outlined {
+    font-size: 48px;
+    margin-bottom: var(--spacing-2);
+}
+
+.edit-receipt-items-empty p {
+    margin-bottom: var(--spacing-4);
+}
