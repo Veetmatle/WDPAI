@@ -1,7 +1,8 @@
 /**
- * Add Expense Page JavaScript
+ * JS do dodawania wydatku
  */
 
+// `Inicjalizacja, kod czeka aż się cały HTML przemieli i uruchamia poszczególne moduły strony
 document.addEventListener('DOMContentLoaded', function() {
     initModeSwitcher();
     initManualForm();
@@ -9,23 +10,23 @@ document.addEventListener('DOMContentLoaded', function() {
     initItemsManagement();
 });
 
-// Mode switching (Manual vs OCR)
+
+// Przełączanie trybów - funckja obsługuje zakładki na górze formularza "ręcznie/OCR"
 function initModeSwitcher() {
     const modeButtons = document.querySelectorAll('.add-expense-mode-btn');
-    const ocrSection = document.getElementById('ocr-section');
-    const manualForm = document.getElementById('expenseForm');
+    const ocrSection = document.getElementById('ocr-section'); // diva znajduje do "OCRa"
+    const manualForm = document.getElementById('expenseForm'); // form do dodawania ręcznego
     
     if (!modeButtons.length) return;
     
+    // dla każdego przycisku event listenery trzeba dodać, jak któryś będzie kliknięty wykona się kod wewn
     modeButtons.forEach(function(btn) {
         btn.addEventListener('click', function() {
             const mode = this.dataset.mode;
             
-            // Update active button
             modeButtons.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             
-            // Show/hide sections
             if (mode === 'manual') {
                 if (manualForm) manualForm.style.display = 'flex';
                 if (ocrSection) ocrSection.classList.add('hidden');
@@ -37,18 +38,22 @@ function initModeSwitcher() {
     });
 }
 
-// Manual form handling
+
+
+// Ręczne wpisywanie wydatku
 function initManualForm() {
+
+    // pobieranie formularza wydatków
     const form = document.getElementById('expenseForm');
     if (!form) return;
     
-    // Date default to today
+    // wpisuje datę na dzisiaj jeśli pole jest puste
     const dateInput = form.querySelector('input[type="date"]');
     if (dateInput && !dateInput.value) {
         dateInput.value = new Date().toISOString().split('T')[0];
     }
     
-    // Form validation
+    // Walidacja - listener na foemularzu czekajacy na submita
     form.addEventListener('submit', function(e) {
         const storeName = form.querySelector('input[name="store_name"]');
         const amount = form.querySelector('input[name="total_amount"]');
@@ -71,7 +76,8 @@ function initManualForm() {
     });
 }
 
-// OCR upload handling
+
+// Wgrywanie pliku przez OCRa
 function initOCRUpload() {
     const dropZone = document.querySelector('.add-expense-ocr-dropzone');
     const fileInput = document.querySelector('.add-expense-ocr-input');
@@ -79,32 +85,32 @@ function initOCRUpload() {
     
     if (!dropZone || !fileInput) return;
     
-    // Click to upload
+    // Jak klikniemy w dropzone to otwiera się okno wyboru pliku
     dropZone.addEventListener('click', function() {
         fileInput.click();
     });
     
-    // Drag and drop
+    // Obsługa drag and drop pliku
     dropZone.addEventListener('dragover', function(e) {
-        e.preventDefault();
+        e.preventDefault(); // blokuje przeglądarkę przed odpaleniem przeciągniętego pliku w karcie
         this.classList.add('dragover');
     });
     
     dropZone.addEventListener('dragleave', function() {
-        this.classList.remove('dragover');
+        this.classList.remove('dragover'); // jak wyjdzie myszka poza dropzone to usuwa podświetlenie
     });
     
     dropZone.addEventListener('drop', function(e) {
         e.preventDefault();
-        this.classList.remove('dragover');
+        this.classList.remove('dragover'); // wywal podświetlenie
         
         const files = e.dataTransfer.files;
         if (files.length > 0) {
-            handleFileSelect(files[0]);
+            handleFileSelect(files[0]); // wysyła plik przeciągnięty do działania
         }
     });
     
-    // File input change
+    // To samo co wyżej tylko bez dropa (do wyboru przez okienko)
     fileInput.addEventListener('change', function() {
         if (this.files.length > 0) {
             handleFileSelect(this.files[0]);
@@ -117,22 +123,22 @@ function initOCRUpload() {
             return;
         }
         
-        // Show preview
+        // Podgląd wgrywanego pliku
         if (preview) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
                 preview.style.display = 'block';
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(file); // jak przeglądarka przeczyta plik to odpali 
         }
         
-        // Update dropzone text
+        // Zmienia nazwę "wybierz plik" na nazwę pliku dodanego
         dropZone.querySelector('.add-expense-ocr-dropzone-text').textContent = file.name;
     }
 }
 
-// Items management (add/remove items)
+// Ogarnianie itemków - dodawanie, usuwanie, obliczanie kwoty
 function initItemsManagement() {
     const addItemBtn = document.getElementById('add-item-btn');
     const itemsContainer = document.getElementById('items-container');
@@ -149,7 +155,7 @@ function initItemsManagement() {
         if (noItemsMsg) noItemsMsg.classList.add('hidden');
     });
     
-    // Delegate remove button clicks
+    // Nasłuchuje kontener itemków jak kliknie w coś w środku to sprawdzam czy to przycisk usuwania
     itemsContainer.addEventListener('click', function(e) {
         if (e.target.closest('.add-expense-remove-item-btn')) {
             const row = e.target.closest('.add-expense-item-row');
@@ -157,7 +163,7 @@ function initItemsManagement() {
                 row.remove();
                 updateTotal();
                 
-                // Show no items message if no items left
+                // jak nie ma itemków - pokazuje komunikat że brak itemków
                 const items = itemsContainer.querySelectorAll('.add-expense-item-row');
                 if (items.length === 0 && noItemsMsg) {
                     noItemsMsg.classList.remove('hidden');
@@ -166,13 +172,15 @@ function initItemsManagement() {
         }
     });
     
-    // Update total on input change
+    // Jeśli zmieni się ilość lub cena to przelicza total
     itemsContainer.addEventListener('input', function(e) {
         if (e.target.matches('input[name*="price"], input[name*="quantity"]')) {
             updateTotal();
         }
     });
     
+
+    // przelicza total
     function updateTotal() {
         const rows = itemsContainer.querySelectorAll('.add-expense-item-row');
         let total = 0;
@@ -185,25 +193,25 @@ function initItemsManagement() {
             total += price * quantity;
         });
         
-        // Update total input field
         if (totalInput && total > 0) {
             totalInput.value = total.toFixed(2);
         }
     }
 }
 
+
+// Dodawanie rzędu z itemkiem
 function addItemRow(index) {
-    const container = document.getElementById('items-container');
+    const container = document.getElementById('items-container'); // kontener na itemki
     if (!container) return;
     
-    // Build category options from global categories variable
+    // Jeśli nie znajdzie poprawnych kategorii to dodaje domyślne, żeby nie było pustej listy i błędu   
     let categoryOptions = '<option value="">Kategoria</option>';
     if (typeof categories !== 'undefined' && Array.isArray(categories)) {
         categories.forEach(function(cat) {
             categoryOptions += `<option value="${cat.id}">${cat.name}</option>`;
         });
     } else {
-        // Fallback categories
         categoryOptions += `
             <option value="1">Jedzenie</option>
             <option value="2">Dom</option>
@@ -231,6 +239,7 @@ function addItemRow(index) {
     container.appendChild(row);
 }
 
+// Pokazuje błędy przy polach formularza
 function showFieldError(input, message) {
     clearFieldError(input);
     
