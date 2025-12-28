@@ -23,13 +23,14 @@ class SecurityController extends AppController
     public function login(): void
     {
         if ($this->isGet()) {
-            $this->render('login');
+            $error = $this->getFlash('error');
+            $this->render('login', $error ? ['error' => $error] : []);
             return;
         }
 
         // Validate CSRF
         if (!$this->validateCsrf()) {
-            $this->render('login', ['error' => 'Nieprawidłowe żądanie. Odśwież stronę i spróbuj ponownie.']);
+            $this->redirectWithError('/login', 'Nieprawidłowe żądanie. Odśwież stronę i spróbuj ponownie.');
             return;
         }
 
@@ -38,19 +39,19 @@ class SecurityController extends AppController
 
         // Validate input
         if (empty($email) || empty($password)) {
-            $this->render('login', ['error' => 'Wypełnij wszystkie pola']);
+            $this->redirectWithError('/login', 'Wypełnij wszystkie pola');
             return;
         }
 
         // Validate email format
         if (!$this->isValidEmail($email)) {
-            $this->render('login', ['error' => 'Nieprawidłowy format email']);
+            $this->redirectWithError('/login', 'Nieprawidłowy format email');
             return;
         }
 
         // Limit input length
         if (strlen($email) > 255 || strlen($password) > 255) {
-            $this->render('login', ['error' => 'Nieprawidłowe dane wejściowe']);
+            $this->redirectWithError('/login', 'Nieprawidłowe dane wejściowe');
             return;
         }
 
@@ -59,7 +60,7 @@ class SecurityController extends AppController
 
         // Use consistent error message to prevent email enumeration
         if (!$user || !$user->verifyPassword($password)) {
-            $this->render('login', ['error' => 'Nieprawidłowy email lub hasło']);
+            $this->redirectWithError('/login', 'Nieprawidłowy email lub hasło');
             return;
         }
 
@@ -80,13 +81,14 @@ class SecurityController extends AppController
     public function register(): void
     {
         if ($this->isGet()) {
-            $this->render('register');
+            $error = $this->getFlash('error');
+            $this->render('register', $error ? ['error' => $error] : []);
             return;
         }
 
         // Validate CSRF
         if (!$this->validateCsrf()) {
-            $this->render('register', ['error' => 'Nieprawidłowe żądanie. Odśwież stronę i spróbuj ponownie.']);
+            $this->redirectWithError('/register', 'Nieprawidłowe żądanie. Odśwież stronę i spróbuj ponownie.');
             return;
         }
 
@@ -98,49 +100,49 @@ class SecurityController extends AppController
 
         // Validate required fields
         if (empty($email) || empty($password) || empty($passwordConfirm) || empty($name) || empty($surname)) {
-            $this->render('register', ['error' => 'Wypełnij wszystkie pola']);
+            $this->redirectWithError('/register', 'Wypełnij wszystkie pola');
             return;
         }
 
         // Validate email format
         if (!$this->isValidEmail($email)) {
-            $this->render('register', ['error' => 'Nieprawidłowy format email']);
+            $this->redirectWithError('/register', 'Nieprawidłowy format email');
             return;
         }
 
         // Validate input lengths
         if (strlen($email) > 255 || strlen($name) > 100 || strlen($surname) > 100) {
-            $this->render('register', ['error' => 'Dane wejściowe są za długie']);
+            $this->redirectWithError('/register', 'Dane wejściowe są za długie');
             return;
         }
 
         // Validate name and surname (only letters, Polish characters, spaces, hyphens)
         if (!preg_match('/^[\p{L}\s\-]{2,}$/u', $name) || !preg_match('/^[\p{L}\s\-]{2,}$/u', $surname)) {
-            $this->render('register', ['error' => 'Imię i nazwisko mogą zawierać tylko litery (min. 2 znaki)']);
+            $this->redirectWithError('/register', 'Imię i nazwisko mogą zawierać tylko litery (min. 2 znaki)');
             return;
         }
 
         // Validate password
         if (strlen($password) < 8) {
-            $this->render('register', ['error' => 'Hasło musi mieć minimum 8 znaków']);
+            $this->redirectWithError('/register', 'Hasło musi mieć minimum 8 znaków');
             return;
         }
 
         // Check password complexity
         if (!preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) || !preg_match('/[0-9]/', $password)) {
-            $this->render('register', ['error' => 'Hasło musi zawierać wielką literę, małą literę i cyfrę']);
+            $this->redirectWithError('/register', 'Hasło musi zawierać wielką literę, małą literę i cyfrę');
             return;
         }
 
         // Validate password confirmation
         if ($password !== $passwordConfirm) {
-            $this->render('register', ['error' => 'Hasła nie są identyczne']);
+            $this->redirectWithError('/register', 'Hasła nie są identyczne');
             return;
         }
 
         // Check if email already exists
         if ($this->userRepository->emailExists($email)) {
-            $this->render('register', ['error' => 'Ten adres email jest już zarejestrowany']);
+            $this->redirectWithError('/register', 'Ten adres email jest już zarejestrowany');
             return;
         }
 
@@ -151,11 +153,11 @@ class SecurityController extends AppController
             if ($result) {
                 $this->redirect('/login?registered=1');
             } else {
-                $this->render('register', ['error' => 'Błąd podczas rejestracji. Spróbuj ponownie.']);
+                $this->redirectWithError('/register', 'Błąd podczas rejestracji. Spróbuj ponownie.');
             }
         } catch (Exception $e) {
             error_log("Registration error: " . $e->getMessage());
-            $this->render('register', ['error' => 'Wystąpił błąd. Spróbuj ponownie później.']);
+            $this->redirectWithError('/register', 'Wystąpił błąd. Spróbuj ponownie później.');
         }
     }
 

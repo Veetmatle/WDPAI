@@ -7,11 +7,12 @@ services:
       - "8080:80"
     volumes:
       - .:/app/
-    links:
-      - php
     networks:
       - pg-network
-  
+    depends_on:
+      - php
+      - db
+
   db:
     build:
       context: .
@@ -21,8 +22,13 @@ services:
     networks:
       - pg-network
     volumes:
-    - ./docker/db:/docker-entrypoint-initdb.d
-  
+      - ./docker/db:/docker-entrypoint-initdb.d
+      - pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
   php:
     build:
       context: .
@@ -31,18 +37,23 @@ services:
       - .:/app
     networks:
       - pg-network
-  
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
   pgadmin-wdpai:
     image: dpage/pgadmin4:latest
     container_name: pg-admin2
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     ports:
       - "5050:80"
     networks:
       - pg-network
-  
+
 networks:
   pg-network:
 

@@ -1,9 +1,8 @@
 -- =====================================================
--- Smart Expense Tracker - Database Schema
--- PostgreSQL initialization script
+-- Baza danych apki do paragonów
 -- =====================================================
 
--- Drop existing tables if they exist (for clean reinstall)
+-- Czyszczenie bazy 
 DROP TABLE IF EXISTS receipt_items CASCADE;
 DROP TABLE IF EXISTS receipts CASCADE;
 DROP TABLE IF EXISTS budgets CASCADE;
@@ -11,7 +10,7 @@ DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
 -- =====================================================
--- USERS TABLE
+-- USERS
 -- =====================================================
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -23,7 +22,7 @@ CREATE TABLE users (
 );
 
 -- =====================================================
--- CATEGORIES TABLE
+-- CATEGORIES
 -- =====================================================
 CREATE TABLE categories (
     id SERIAL PRIMARY KEY,
@@ -36,7 +35,7 @@ CREATE TABLE categories (
 );
 
 -- =====================================================
--- BUDGETS TABLE
+-- BUDGETS
 -- =====================================================
 CREATE TABLE budgets (
     id SERIAL PRIMARY KEY,
@@ -49,7 +48,7 @@ CREATE TABLE budgets (
 );
 
 -- =====================================================
--- RECEIPTS TABLE (Paragony)
+-- RECEIPTS
 -- =====================================================
 CREATE TABLE receipts (
     id SERIAL PRIMARY KEY,
@@ -63,7 +62,7 @@ CREATE TABLE receipts (
 );
 
 -- =====================================================
--- RECEIPT_ITEMS TABLE (Produkty na paragonie)
+-- RECEIPT_ITEMS
 -- =====================================================
 CREATE TABLE receipt_items (
     id SERIAL PRIMARY KEY,
@@ -76,7 +75,7 @@ CREATE TABLE receipt_items (
 );
 
 -- =====================================================
--- INDEXES for better performance
+-- INDEKSY - przyśpieszają query. Tutaj niezbyt zauważalne, ale przy większej ilości danych pomaga. Domyślnie primary key i unique mają indeksy.
 -- =====================================================
 CREATE INDEX idx_receipts_user_id ON receipts(user_id);
 CREATE INDEX idx_receipts_date ON receipts(receipt_date);
@@ -85,9 +84,9 @@ CREATE INDEX idx_budgets_user_month_year ON budgets(user_id, month, year);
 CREATE INDEX idx_categories_user_id ON categories(user_id);
 
 -- =====================================================
--- DEFAULT CATEGORIES (will be cloned for each new user)
+-- KATEGORIE DOMYŚLNE 
 -- =====================================================
--- These are template categories with user_id = NULL
+-- Kategorie z user_id = NULL, kopiowane dla każdego nowego usera
 INSERT INTO categories (user_id, name, icon_name, color_hex, is_default) VALUES
 (NULL, 'Jedzenie', 'restaurant', '#EF4444', TRUE),
 (NULL, 'Transport', 'directions_car', '#3B82F6', TRUE),
@@ -99,29 +98,28 @@ INSERT INTO categories (user_id, name, icon_name, color_hex, is_default) VALUES
 (NULL, 'Inne', 'more_horiz', '#6B7280', TRUE);
 
 -- =====================================================
--- TEST USER (password: test123)
--- Hash generated with password_hash('test123', PASSWORD_BCRYPT)
+-- UŻYTKOWNIK TESTOWY (Hasło: test123)
 -- =====================================================
 INSERT INTO users (email, password_hash, name, surname) VALUES
 ('test@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Jan', 'Kowalski');
 
--- Clone default categories for the test user
+-- Skopiowanie kategorii domyślnych dla testera
 INSERT INTO categories (user_id, name, icon_name, color_hex, is_default)
 SELECT 1, name, icon_name, color_hex, FALSE
 FROM categories
 WHERE is_default = TRUE;
 
 -- =====================================================
--- SAMPLE DATA for test user
+-- DANE PRZYKŁADOWE - insert
 -- =====================================================
 
--- Sample budget for current and previous months
+-- Przykładowe budżety
 INSERT INTO budgets (user_id, month, year, amount_limit) VALUES
 (1, EXTRACT(MONTH FROM CURRENT_DATE)::INTEGER, EXTRACT(YEAR FROM CURRENT_DATE)::INTEGER, 3000.00),
 (1, EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month')::INTEGER, EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month')::INTEGER, 2800.00),
 (1, EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '2 months')::INTEGER, EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '2 months')::INTEGER, 2500.00);
 
--- Sample receipts
+-- Przykładowe paragony
 INSERT INTO receipts (user_id, store_name, receipt_date, total_amount, notes) VALUES
 (1, 'Biedronka', CURRENT_DATE, 156.45, 'Zakupy tygodniowe'),
 (1, 'Żabka', CURRENT_DATE - INTERVAL '1 day', 32.50, 'Przekąski'),
@@ -134,7 +132,7 @@ INSERT INTO receipts (user_id, store_name, receipt_date, total_amount, notes) VA
 (1, 'Apteka', CURRENT_DATE - INTERVAL '15 days', 45.50, 'Leki'),
 (1, 'Kaufland', CURRENT_DATE - INTERVAL '20 days', 320.00, 'Zakupy spożywcze');
 
--- Sample receipt items (linked to receipts)
+-- Przykładowe pozycje na paragonach
 INSERT INTO receipt_items (receipt_id, product_name, category_id, price, quantity) VALUES
 -- Biedronka
 (1, 'Chleb', (SELECT id FROM categories WHERE user_id = 1 AND name = 'Jedzenie' LIMIT 1), 5.99, 2),
@@ -153,8 +151,10 @@ INSERT INTO receipt_items (receipt_id, product_name, category_id, price, quantit
 (8, 'Bilet do kina', (SELECT id FROM categories WHERE user_id = 1 AND name = 'Rozrywka' LIMIT 1), 32.50, 2);
 
 -- =====================================================
--- FUNCTION to clone default categories for new users
+-- TRIGGERY I FUNKCJE
 -- =====================================================
+
+-- Funkcja: Kopia kategorii domyślnych dla nowego użytkownika
 CREATE OR REPLACE FUNCTION clone_default_categories()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -166,7 +166,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Trigger to auto-clone categories on new user registration
+-- Trigger: Uruchomienie funkcji po dodaniu usera (INSERT ON users)
 CREATE TRIGGER trigger_clone_categories
     AFTER INSERT ON users
     FOR EACH ROW

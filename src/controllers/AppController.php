@@ -148,4 +148,33 @@ abstract class AppController
         $content = file_get_contents('php://input');
         return json_decode($content, true) ?? [];
     }
+
+    /**
+     * Set a flash message (displayed once, then removed)
+     */
+    protected function setFlash(string $key, string $message): void
+    {
+        $_SESSION['flash'][$key] = $message;
+    }
+
+    /**
+     * Get and remove a flash message
+     */
+    protected function getFlash(string $key): ?string
+    {
+        $message = $_SESSION['flash'][$key] ?? null;
+        if ($message !== null) {
+            unset($_SESSION['flash'][$key]);
+        }
+        return $message;
+    }
+
+    /**
+     * Redirect with an error flash message
+     */
+    protected function redirectWithError(string $path, string $error): void
+    {
+        $this->setFlash('error', $error);
+        $this->redirect($path);
+    }
 }
