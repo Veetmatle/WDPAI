@@ -1,0 +1,235 @@
+/**
+ * Daily Expenses Page Styles
+ */
+
+.daily-expenses-wrapper {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: var(--spacing-4);
+    padding-bottom: 6rem;
+    min-height: 100vh;
+}
+
+/* Header */
+.daily-expenses-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
+}
+
+.daily-expenses-back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-surface-dark);
+    color: var(--color-text-primary);
+    transition: var(--transition-colors);
+    text-decoration: none;
+}
+
+.daily-expenses-back-btn:hover {
+    background-color: var(--color-surface-hover);
+}
+
+.daily-expenses-header-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.daily-expenses-header-spacer {
+    width: 2.5rem;
+}
+
+/* Main Content */
+.daily-expenses-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+}
+
+/* Summary */
+.daily-expenses-summary {
+    text-align: center;
+    padding: var(--spacing-6);
+    background-color: var(--color-surface-dark);
+    border-radius: var(--radius-2xl);
+}
+
+.daily-expenses-date {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-2);
+}
+
+.daily-expenses-total {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+/* Receipts List */
+.daily-expenses-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+}
+
+/* Empty State */
+.daily-expenses-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-12);
+    text-align: center;
+    background-color: var(--color-surface-dark);
+    border-radius: var(--radius-2xl);
+}
+
+.daily-expenses-empty .material-symbols-outlined {
+    font-size: 4rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-4);
+}
+
+.daily-expenses-empty-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-4);
+}
+
+.daily-expenses-empty-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-6);
+    background-color: var(--color-primary);
+    color: var(--color-text-on-primary);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition-colors);
+}
+
+.daily-expenses-empty-link:hover {
+    background-color: var(--color-primary-hover);
+}
+
+.daily-expenses-empty-link .material-symbols-outlined {
+    font-size: 1.25rem;
+    color: inherit;
+    margin-bottom: 0;
+}
+
+/* Receipt Card */
+.daily-expenses-card {
+    background-color: var(--color-surface-dark);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    transition: var(--transition-colors);
+}
+
+.daily-expenses-card:hover {
+    background-color: var(--color-surface-hover);
+}
+
+.daily-expenses-card-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+    padding: var(--spacing-4);
+    text-decoration: none;
+    color: inherit;
+}
+
+.daily-expenses-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-primary-alpha);
+    flex-shrink: 0;
+}
+
+.daily-expenses-card-icon .material-symbols-outlined {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+}
+
+.daily-expenses-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.daily-expenses-card-name {
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-1);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.daily-expenses-card-time {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+}
+
+.daily-expenses-card-amount {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.daily-expenses-card-amount p {
+    font-weight: 700;
+    color: var(--color-primary);
+    font-size: 1rem;
+}
+
+/* Add Expense Button */
+.daily-expenses-add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    width: 100%;
+    padding: var(--spacing-4);
+    margin-top: var(--spacing-4);
+    background-color: var(--color-primary);
+    border-radius: var(--radius-xl);
+    color: var(--color-text-on-primary);
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: var(--transition-colors);
+    box-shadow: var(--shadow-primary);
+}
+
+.daily-expenses-add-btn:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.daily-expenses-add-btn .material-symbols-outlined {
+    font-size: 1.25rem;
+}
+
+/* Responsive */
+@media (min-width: 640px) {
+    .daily-expenses-wrapper {
+        padding: var(--spacing-6);
+    }
+
+    .daily-expenses-fab {
+        right: calc(50% - 21rem + var(--spacing-6));
+    }
+}

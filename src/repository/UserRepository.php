@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Repository.php';
-require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../model/User.php';
 
 /**
  * User Repository

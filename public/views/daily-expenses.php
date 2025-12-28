@@ -70,12 +70,13 @@ $activePage = 'calendar';
                 <?php endforeach; ?>
                 <?php endif; ?>
             </div>
-        </main>
 
-        <!-- FAB Button -->
-        <a href="/add-expense?date=<?= htmlspecialchars($date ?? date('Y-m-d')) ?>" class="daily-expenses-fab">
-            <span class="material-symbols-outlined">add</span>
-        </a>
+            <!-- Add Expense Button -->
+            <a href="/add-expense?date=<?= htmlspecialchars($date ?? date('Y-m-d')) ?>" class="daily-expenses-add-btn">
+                <span class="material-symbols-outlined">add_circle</span>
+                Dodaj wydatek
+            </a>
+        </main>
 
         <!-- Bottom Navigation -->
         <?php include __DIR__ . '/components/bottom-nav.php'; ?>

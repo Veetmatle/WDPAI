@@ -1,37 +1,32 @@
-FROM php:8.3.18RC1-fpm-alpine3.21
+FROM php:8.2-fpm
 
-ENV RUN_DEPS \
-    zlib \
-    libzip \
-    libpng \
-    libjpeg-turbo \
-    postgresql-libs
-
-ENV BUILD_DEPS \
-    zlib-dev \
-    libzip-dev \
+# Install PostgreSQL extension and other dependencies
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
     libpng-dev \
-    libjpeg-turbo-dev \
-    postgresql-dev
-
-ENV PHP_EXTENSIONS \
-    opcache \
+    libjpeg-dev \
+    libfreetype6-dev \
     zip \
-    gd \
-    bcmath \
-    pgsql \
-    pdo_pgsql
+    unzip \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_pgsql gd
 
-RUN apk add --no-cache --virtual .build-deps $BUILD_DEPS \
-    && docker-php-ext-configure gd --with-jpeg \
-    && docker-php-ext-install -j "$(nproc)" $PHP_EXTENSIONS \
-    && apk del .build-deps
+# Set working directory
+WORKDIR /app
 
-RUN apk add --no-cache --virtual .run-deps $RUN_DEPS
-
-RUN echo 'memory_limit = -1' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini;
-
-# Copy the application code
+# Copy application code
 COPY . /app
 
-VOLUME ["/app"]
+# Create uploads directory and set permissions
+RUN mkdir -p /app/public/uploads && chmod -R 777 /app/public/uploads
+
+# PHP configuration
+RUN echo "upload_max_filesize = 20M" >> /usr/local/etc/php/php.ini \
+    && echo "post_max_size = 20M" >> /usr/local/etc/php/php.ini \
+    && echo "max_execution_time = 300" >> /usr/local/etc/php/php.ini \
+    && echo "session.cookie_httponly = 1" >> /usr/local/etc/php/php.ini \
+    && echo "session.cookie_samesite = Lax" >> /usr/local/etc/php/php.ini
+
+EXPOSE 9000
+
+CMD ["php-fpm"]

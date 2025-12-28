@@ -345,15 +345,37 @@ class ExpenseController extends AppController
     }
 
     /**
-     * Display all expenses
+     * Display all expenses (optionally filtered by month)
      */
     public function all(): void
     {
         $this->requireLogin();
         $userId = $this->getUserId();
 
-        // Pobierz wszystkie paragony
-        $receipts = $this->receiptRepository->getReceiptsByUserId($userId, 100);
+        // Sprawdź czy filtrujemy po miesiącu
+        $month = isset($_GET['month']) ? (int)$_GET['month'] : null;
+        $year = isset($_GET['year']) ? (int)$_GET['year'] : null;
+        
+        $monthNames = [
+            1 => 'Styczeń', 2 => 'Luty', 3 => 'Marzec', 4 => 'Kwiecień',
+            5 => 'Maj', 6 => 'Czerwiec', 7 => 'Lipiec', 8 => 'Sierpień',
+            9 => 'Wrzesień', 10 => 'Październik', 11 => 'Listopad', 12 => 'Grudzień'
+        ];
+        
+        $pageTitle = 'Wszystkie wydatki';
+        $filterMonth = null;
+        $filterYear = null;
+        
+        if ($month && $year && $month >= 1 && $month <= 12 && $year >= 2000) {
+            // Pobierz paragony z danego miesiąca
+            $receipts = $this->receiptRepository->getReceiptsByMonth($userId, $month, $year, 100);
+            $pageTitle = 'Wydatki: ' . $monthNames[$month] . ' ' . $year;
+            $filterMonth = $month;
+            $filterYear = $year;
+        } else {
+            // Pobierz wszystkie paragony
+            $receipts = $this->receiptRepository->getReceiptsByUserId($userId, 100);
+        }
 
         // Grupuj po dacie
         $groupedReceipts = [];
@@ -372,6 +394,9 @@ class ExpenseController extends AppController
 
         $this->render('expenses', [
             'groupedReceipts' => $groupedReceipts,
+            'pageTitle' => $pageTitle,
+            'filterMonth' => $filterMonth,
+            'filterYear' => $filterYear,
             'activePage' => 'expenses'
         ]);
     }

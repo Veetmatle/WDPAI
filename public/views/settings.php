@@ -143,6 +143,7 @@ $activePage = 'settings';
                     <div class="settings-input-wrapper">
                         <span class="material-symbols-outlined settings-input-icon">lock</span>
                         <input type="password" name="current_password" id="currentPassword" required
+                               placeholder=" "
                                class="settings-input settings-input-with-icon settings-input-password">
                         <button type="button" class="settings-password-toggle" data-target="currentPassword">
                             <span class="material-symbols-outlined">visibility_off</span>
@@ -155,6 +156,7 @@ $activePage = 'settings';
                     <div class="settings-input-wrapper">
                         <span class="material-symbols-outlined settings-input-icon">key</span>
                         <input type="password" name="new_password" id="newPassword" required
+                               placeholder=" "
                                class="settings-input settings-input-with-icon settings-input-password">
                         <button type="button" class="settings-password-toggle" data-target="newPassword">
                             <span class="material-symbols-outlined">visibility_off</span>
@@ -175,6 +177,7 @@ $activePage = 'settings';
                     <div class="settings-input-wrapper">
                         <span class="material-symbols-outlined settings-input-icon">key</span>
                         <input type="password" name="confirm_password" id="confirmPassword" required
+                               placeholder=" "
                                class="settings-input settings-input-with-icon settings-input-password">
                         <button type="button" class="settings-password-toggle" data-target="confirmPassword">
                             <span class="material-symbols-outlined">visibility_off</span>

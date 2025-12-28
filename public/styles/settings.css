@@ -173,6 +173,7 @@
 
 .settings-input-wrapper {
     position: relative;
+    width: 100%;
 }
 
 .settings-input {
@@ -214,6 +215,12 @@
     align-items: center;
     justify-content: center;
     line-height: 1;
+    transition: opacity 0.2s ease;
+}
+
+/* Ukryj ikonę gdy input ma wartość */
+.settings-input-wrapper:has(.settings-input:not(:placeholder-shown)) .settings-input-icon {
+    opacity: 0;
 }
 
 .settings-password-toggle {

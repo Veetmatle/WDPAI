@@ -1,8 +1,6 @@
-FROM nginx:1.17.8-alpine
+FROM nginx:latest
 
-# Copy the public directory
-# COPY ./public/ /app/public/
-COPY . /app/
+COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY . /app
 
-# Copy the nginx config file
-COPY ./docker/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80

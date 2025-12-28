@@ -6,6 +6,7 @@
 /** @var float $totalExpenses */
 /** @var array|null $budget */
 /** @var array $monthlySummary */
+/** @var array $monthlyReceipts */
 /** @var int $prevMonth */
 /** @var int $prevYear */
 /** @var int $nextMonth */
@@ -223,6 +224,51 @@ if ($maxMonthlyValue == 0) $maxMonthlyValue = 1000;
             <?php endif; ?>
         </div>
         <?php endif; ?>
+
+        <!-- Monthly Receipts -->
+        <div class="stats-card">
+            <div class="stats-card-header">
+                <h2 class="stats-card-title">
+                    <span class="material-symbols-outlined">receipt_long</span>
+                    Paragony z <?= htmlspecialchars($monthName) ?>
+                </h2>
+                <a href="/expenses?month=<?= $month ?>&year=<?= $year ?>" class="stats-card-link">Zobacz wszystkie</a>
+            </div>
+            
+            <?php if (!empty($monthlyReceipts)): ?>
+            <ul class="stats-receipts-list">
+                <?php foreach ($monthlyReceipts as $receipt): ?>
+                <li>
+                    <a href="/receipt?id=<?= $receipt['id'] ?>" class="stats-receipt-item">
+                        <div class="stats-receipt-icon">
+                            <span class="material-symbols-outlined">
+                                <?= htmlspecialchars($receipt['category_icon'] ?? 'receipt_long') ?>
+                            </span>
+                        </div>
+                        <div class="stats-receipt-info">
+                            <p class="stats-receipt-name"><?= htmlspecialchars($receipt['store_name']) ?></p>
+                            <p class="stats-receipt-meta">
+                                <?= date('d.m.Y', strtotime($receipt['receipt_date'])) ?>
+                                <?php if (!empty($receipt['category_name'])): ?>
+                                    • <?= htmlspecialchars($receipt['category_name']) ?>
+                                <?php endif; ?>
+                            </p>
+                        </div>
+                        <div class="stats-receipt-amount">
+                            <p><?= number_format($receipt['total_amount'], 2, ',', ' ') ?> zł</p>
+                        </div>
+                        <span class="material-symbols-outlined stats-receipt-arrow">chevron_right</span>
+                    </a>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+            <?php else: ?>
+            <div class="stats-empty">
+                <span class="material-symbols-outlined">receipt_long</span>
+                <p>Brak paragonów w tym miesiącu</p>
+            </div>
+            <?php endif; ?>
+        </div>
     </div>
 
     <!-- Bottom Navigation -->

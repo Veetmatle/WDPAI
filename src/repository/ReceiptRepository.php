@@ -1,8 +1,8 @@
 <?php
 
 require_once 'Repository.php';
-require_once __DIR__ . '/../models/Receipt.php';
-require_once __DIR__ . '/../models/ReceiptItem.php';
+require_once __DIR__ . '/../model/Receipt.php';
+require_once __DIR__ . '/../model/ReceiptItem.php';
 
 /**
  * Receipt Repository
@@ -58,6 +58,35 @@ class ReceiptRepository extends Repository
             LIMIT :limit
         ');
         $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get receipts for a specific month
+     */
+    public function getReceiptsByMonth(int $userId, int $month, int $year, int $limit = 5): array
+    {
+        $stmt = $this->database->connect()->prepare('
+            SELECT r.id, r.store_name, r.receipt_date, r.total_amount, r.notes,
+                   (SELECT c.name FROM receipt_items ri2 
+                    JOIN categories c ON c.id = ri2.category_id 
+                    WHERE ri2.receipt_id = r.id LIMIT 1) as category_name,
+                   (SELECT c.icon_name FROM receipt_items ri3 
+                    JOIN categories c ON c.id = ri3.category_id 
+                    WHERE ri3.receipt_id = r.id LIMIT 1) as category_icon
+            FROM receipts r
+            WHERE r.user_id = :user_id 
+              AND EXTRACT(MONTH FROM r.receipt_date) = :month
+              AND EXTRACT(YEAR FROM r.receipt_date) = :year
+            ORDER BY r.receipt_date DESC, r.created_at DESC
+            LIMIT :limit
+        ');
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':month', $month, PDO::PARAM_INT);
+        $stmt->bindParam(':year', $year, PDO::PARAM_INT);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
 

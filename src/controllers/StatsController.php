@@ -55,6 +55,9 @@ class StatsController extends AppController
         // Pobierz podsumowanie ostatnich 6 miesięcy
         $monthlySummary = $this->receiptRepository->getExpensesSummary($userId, 6);
 
+        // Pobierz paragony z danego miesiąca (max 3)
+        $monthlyReceipts = $this->receiptRepository->getReceiptsByMonth($userId, $month, $year, 3);
+
         // Poprzedni i następny miesiąc
         $prevMonth = $month - 1;
         $prevYear = $year;
@@ -84,6 +87,7 @@ class StatsController extends AppController
             'totalExpenses' => $totalExpenses,
             'budget' => $budget,
             'monthlySummary' => $monthlySummary,
+            'monthlyReceipts' => $monthlyReceipts,
             'prevMonth' => $prevMonth,
             'prevYear' => $prevYear,
             'nextMonth' => $nextMonth,
