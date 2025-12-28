@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>404 - Nie znaleziono - Smart Expense Tracker</title>
+    <title>404 - Nie znaleziono - ChronoCash</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
     <link rel="stylesheet" href="/public/styles/common.css"/>
@@ -39,14 +39,14 @@
                 <p>
                     <span class="material-symbols-outlined">lightbulb</span>
                     <strong>Ciekawostka:</strong> 
-                    Statystyczny Polak wydaje ok. 40% budżetu na jedzenie. Śledź swoje wydatki!
+                    Kajak od tyłu to kajak.
                 </p>
             </div>
         </div>
 
         <!-- Footer -->
         <div class="error-footer">
-            <p>Smart Expense Tracker v1.0</p>
+            <p>ChronoCash, ale nazwa do zmiany będzie</p>
         </div>
     </div>
 </body>

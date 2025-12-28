@@ -1,7 +1,4 @@
-/**
- * Smart Expense Tracker - Login Page Styles
- */
-
+/* Główny kontener - centruje formularz na środku ekranu */
 .login-container {
     display: flex;
     flex-direction: column;
@@ -13,7 +10,7 @@
     font-family: var(--font-display);
 }
 
-/* Logo Section */
+/* Kontener na logo i napisy */
 .login-logo-section {
     display: flex;
     flex-direction: column;
@@ -24,6 +21,7 @@
     max-width: 24rem;
 }
 
+/* Samo kółko z logo */
 .login-logo-icon {
     width: 4.5rem;
     height: 4.5rem;
@@ -36,6 +34,7 @@
     box-shadow: var(--shadow-primary);
 }
 
+/* Ikona wewnątrz logo */
 .login-logo-icon .material-symbols-outlined {
     font-size: 36px;
     color: white;
@@ -45,6 +44,7 @@
     line-height: 1;
 }
 
+/* "Witaj ponownie" */
 .login-title {
     color: var(--color-text-primary);
     font-size: 1.875rem;
@@ -54,23 +54,25 @@
     margin: 0;
 }
 
+/* "Zaloguj się, aby..." */
 .login-subtitle {
     color: var(--color-text-secondary);
     font-size: 1rem;
     margin-top: var(--spacing-2);
 }
 
-/* Form */
+/* Formularz */
 .login-form {
     width: 100%;
     max-width: 24rem;
 }
 
-/* Input Groups */
+/* Pojedynczy blok: Etykieta + Pole + Błędy */
 .login-input-group {
     margin-bottom: var(--spacing-4);
 }
 
+/* Tekst nad polem */
 .login-label {
     display: block;
     color: var(--color-text-primary);
@@ -79,13 +81,15 @@
     padding-bottom: var(--spacing-2);
 }
 
+/* Kontener otaczający inputa i ikony */
 .login-input-wrapper {
-    position: relative;
+    position: relative; /* punkt odniesienia (0,0) dla ikon w środku */
     display: flex;
     width: 100%;
     align-items: center;
 }
 
+/* Ikona po lewej stronie */
 .login-input-icon {
     position: absolute;
     left: var(--spacing-4);
@@ -95,14 +99,9 @@
     align-items: center;
     justify-content: center;
     font-size: 20px;
-    transition: opacity 0.2s ease;
 }
 
-/* Ukryj ikonę gdy input ma wartość */
-.login-input-wrapper:has(.login-input:not(:placeholder-shown)) .login-input-icon {
-    opacity: 0;
-}
-
+/* Wygląd samego pola do pisania */
 .login-input {
     width: 100%;
     height: 3.5rem;
@@ -119,26 +118,29 @@
     padding-left: 3rem;
 }
 
+/* Stan aktywny (pisanie) */
 .login-input:focus {
     outline: none;
     border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
+/* Styl tekstu podpowiedzi */
 .login-input::placeholder {
     color: var(--color-text-secondary);
 }
 
+/* Padding dla pola hasła */
 .login-input-password {
     padding-right: 3rem;
 }
 
 /* Password Toggle Button */
 .login-password-toggle {
-    position: absolute;
+    position: absolute; /* Unosi się nad inputem */
     right: 0;
     height: 3.5rem;
-    width: 3rem;
+    width: 3rem; /* Obszar klikalny */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -161,6 +163,7 @@
 .login-submit-btn {
     width: 100%;
     height: 3.5rem;
+    /* Gradient: od koloru głównego do ciemniejszego */
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
     color: white;
     font-weight: 600;
@@ -181,7 +184,10 @@
     transform: translateY(0);
 }
 
-/* Field Errors */
+/* =========================================
+   BŁĘDY WALIDACJI (Czerwone komunikaty)
+   ========================================= */
+
 .login-field-error {
     display: block;
     color: #F87171;
@@ -189,11 +195,15 @@
     margin-top: var(--spacing-1);
 }
 
+/* Gdy JS doda klasę .has-error do grupy, ramka -> czerwona */
 .login-input-group.has-error .login-input {
     border-color: #F87171;
 }
 
-/* Divider */
+/* =========================================
+   LINIA ROZDZIELAJĄCA ("lub")
+   ========================================= */
+
 .login-divider {
     display: flex;
     align-items: center;
@@ -202,6 +212,7 @@
     font-size: 0.875rem;
 }
 
+/* Tworzenie linii za pomocą pseudo-elementów */
 .login-divider::before,
 .login-divider::after {
     content: '';
@@ -213,7 +224,10 @@
     padding: 0 var(--spacing-4);
 }
 
-/* Register Link */
+
+/* =========================================
+   LINK REJESTRACJI I DEMO
+   ========================================= */
 .login-register-link {
     text-align: center;
 }
@@ -236,7 +250,7 @@
     text-decoration: underline;
 }
 
-/* Demo Credentials Box */
+/* Box z danymi testowymi */
 .login-demo-box {
     margin-top: var(--spacing-8);
     padding: var(--spacing-4);
@@ -254,6 +268,7 @@
     margin-bottom: var(--spacing-1);
 }
 
+/* Stylizacja loginu i hasła demo */
 .login-demo-credentials {
     color: var(--color-text-primary);
     font-size: 0.875rem;
@@ -264,7 +279,9 @@
     display: inline-block;
 }
 
-/* Messages */
+/* =========================================
+   KOMUNIKATY (Toast messages wewnątrz formy)
+   ========================================= */
 .login-message {
     width: 100%;
     max-width: 24rem;
@@ -297,7 +314,6 @@
     color: #F87171;
 }
 
-/* Field Error */
 .login-field-error {
     display: block;
     color: var(--color-danger);

@@ -8,11 +8,11 @@
 $pageTitle = 'Dashboard';
 $activePage = 'dashboard';
 
-// Przygotuj dane do wykresu
+// dane do wykresu
 $chartData = [];
 $monthNames = ['', 'Sty', 'Lut', 'Mar', 'Kwi', 'Maj', 'Cze', 'Lip', 'Sie', 'Wrz', 'Paź', 'Lis', 'Gru'];
 
-// expensesSummary jest już posortowane od najnowszego, odwracamy dla wykresu
+// expensesSummary posortowane od najnowszego (z bazki), odwrócić dla wykresu
 $summaryReversed = array_reverse($expensesSummary ?? []);
 
 foreach ($summaryReversed as $data) {
@@ -22,7 +22,7 @@ foreach ($summaryReversed as $data) {
     ];
 }
 
-// Uzupełnij brakujące miesiące jeśli mniej niż 4
+// Jeśli nie ma danych z miesięcy 4 to i tak dodać puste słupki
 while (count($chartData) < 4) {
     array_unshift($chartData, ['label' => '-', 'value' => 0]);
 }
@@ -54,7 +54,7 @@ if ($maxValue == 0) $maxValue = 1000; // domyślna skala
         <header class="dashboard-header">
             <div>
                 <p class="dashboard-greeting">Witaj,</p>
-                <h1 class="dashboard-username"><?= htmlspecialchars($user['name'] ?? 'Użytkownik') ?></h1>
+                <h1 class="dashboard-username"><?= htmlspecialchars($user['name'] ?? 'Użytkownik') ?></h1> <!-- Zapobiega injection scriptu -->
             </div>
             <a href="/settings" class="dashboard-avatar">
                 <span class="material-symbols-outlined">person</span>
@@ -76,13 +76,14 @@ if ($maxValue == 0) $maxValue = 1000; // domyślna skala
         </div>
         <?php endif; ?>
 
-        <!-- Monthly Summary Card -->
+        <!-- Monthly summary -->
         <div class="dashboard-summary-card">
             <p class="dashboard-summary-label">Wydatki w tym miesiącu</p>
             <p class="dashboard-summary-amount">
                 <?= number_format($monthlyTotal ?? 0, 2, ',', ' ') ?> <span class="dashboard-summary-currency">zł</span>
             </p>
             
+            <!-- Budget -->
             <?php if (!empty($budget) && isset($budget['amount_limit']) && $budget['amount_limit'] > 0): ?>
             <?php 
                 $spent = $monthlyTotal ?? 0;
@@ -110,14 +111,14 @@ if ($maxValue == 0) $maxValue = 1000; // domyślna skala
             <?php endif; ?>
         </div>
 
-        <!-- Expense Chart -->
+        <!-- Expense chart -->
         <div class="dashboard-chart-card">
             <div class="dashboard-chart-header">
                 <h2 class="dashboard-chart-title">Wydatki miesięczne</h2>
                 <span class="dashboard-chart-subtitle">Ostatnie 4 miesiące</span>
             </div>
             
-            <!-- Chart Bars -->
+            <!-- Chart Bars - height based on max value -->
             <div class="dashboard-chart-container">
                 <?php foreach ($chartData as $index => $data): ?>
                 <?php 

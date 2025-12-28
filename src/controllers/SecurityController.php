@@ -142,7 +142,7 @@ class SecurityController extends AppController
 
         // Check if email already exists
         if ($this->userRepository->emailExists($email)) {
-            $this->redirectWithError('/register', 'Ten adres email jest już zarejestrowany');
+            $this->redirectWithError('/register', 'Jeśli email istnieje, wysłano link aktywacyjny na podany email.');
             return;
         }
 

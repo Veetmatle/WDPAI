@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Logowanie - Smart Expense Tracker</title>
+    <title>Logowanie - ChronoCash</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
     <link rel="stylesheet" href="/public/styles/common.css"/>
@@ -35,7 +35,7 @@
         <?php endif; ?>
 
         <!-- Form -->
-        <form action="/login" method="POST" class="login-form" id="loginForm">
+        <form action="/login" method="POST" class="login-form" id="loginForm" autocomplete="off">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token ?? '') ?>">
             
             <!-- Email -->
@@ -45,7 +45,8 @@
                     <span class="material-symbols-outlined login-input-icon">mail</span>
                     <input type="email" name="email" id="email" required
                         class="login-input"
-                        placeholder="Wpisz swój email">
+                        placeholder="Wpisz swój email"
+                        autocomplete="off">
                 </div>
             </div>
 
@@ -56,7 +57,8 @@
                     <span class="material-symbols-outlined login-input-icon">lock</span>
                     <input type="password" name="password" id="password" required
                         class="login-input login-input-password"
-                        placeholder="Wpisz hasło">
+                        placeholder="Wpisz hasło"
+                        autocomplete="new-password">
                     <button type="button" class="login-password-toggle" data-target="password">
                         <span class="material-symbols-outlined">visibility_off</span>
                     </button>

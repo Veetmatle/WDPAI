@@ -101,7 +101,7 @@ INSERT INTO categories (user_id, name, icon_name, color_hex, is_default) VALUES
 -- UŻYTKOWNIK TESTOWY (Hasło: test123)
 -- =====================================================
 INSERT INTO users (email, password_hash, name, surname) VALUES
-('test@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Jan', 'Kowalski');
+('test@example.com', '$2y$10$Ai/N8MZpAbEf3GJOfO.9Ku//Oxpq32zFcZhkb8OzWeBw5AiQLhBgm', 'Jan', 'Kowalski');
 
 -- Skopiowanie kategorii domyślnych dla testera
 INSERT INTO categories (user_id, name, icon_name, color_hex, is_default)

@@ -10,9 +10,23 @@ function initRegisterForm() {
     const form = document.querySelector('.register-form');
     if (!form) return;
     
+    const nameInput = form.querySelector('input[name="name"]');
+    const surnameInput = form.querySelector('input[name="surname"]');
     const emailInput = form.querySelector('input[name="email"]');
     const passwordInput = form.querySelector('input[name="password"]');
     const confirmInput = form.querySelector('input[name="password_confirm"]');
+    
+    if (nameInput) {
+        nameInput.addEventListener('blur', function() {
+            validateNameField(this, 'Imię');
+        });
+    }
+    
+    if (surnameInput) {
+        surnameInput.addEventListener('blur', function() {
+            validateNameField(this, 'Nazwisko');
+        });
+    }
     
     if (emailInput) {
         emailInput.addEventListener('blur', function() {
@@ -28,6 +42,14 @@ function initRegisterForm() {
     
     form.addEventListener('submit', function(e) {
         let isValid = true;
+        
+        if (nameInput && !validateNameField(nameInput, 'Imię')) {
+            isValid = false;
+        }
+        
+        if (surnameInput && !validateNameField(surnameInput, 'Nazwisko')) {
+            isValid = false;
+        }
         
         if (emailInput && !validateEmailField(emailInput)) {
             isValid = false;
@@ -50,18 +72,37 @@ function initRegisterForm() {
 
 function initPasswordStrength() {
     const passwordInput = document.querySelector('input[name="password"]');
-    const strengthBar = document.querySelector('.register-strength-bar');
-    const strengthText = document.querySelector('.register-strength-text');
+    const strengthContainer = document.getElementById('passwordStrength');
+    const strengthBars = document.querySelectorAll('.register-strength-bar');
+    const passwordHint = document.getElementById('passwordHint');
     
-    if (!passwordInput || !strengthBar || !strengthText) return;
+    if (!passwordInput || !strengthContainer || !strengthBars.length) return;
     
     passwordInput.addEventListener('input', function() {
-        const strength = checkPasswordStrength(this.value);
+        const value = this.value;
         
-        strengthBar.style.width = `${(strength.score / 5) * 100}%`;
-        strengthBar.style.backgroundColor = strength.color;
-        strengthText.textContent = strength.label;
-        strengthText.style.color = strength.color;
+        if (value.length > 0) {
+            strengthContainer.classList.remove('hidden');
+        } else {
+            strengthContainer.classList.add('hidden');
+        }
+        
+        const strength = checkPasswordStrength(value);
+        
+        // Aktualizuj paski siły (4 paski)
+        strengthBars.forEach(function(bar, index) {
+            if (index < strength.score) {
+                bar.style.backgroundColor = strength.color;
+            } else {
+                bar.style.backgroundColor = '#E5E7EB';
+            }
+        });
+        
+        // Aktualizuj tekst podpowiedzi
+        if (passwordHint) {
+            passwordHint.textContent = strength.label;
+            passwordHint.style.color = strength.color;
+        }
     });
 }
 
@@ -96,6 +137,30 @@ function checkPasswordStrength(password) {
         label: strength <= 1 ? 'Słabe' : strength <= 3 ? 'Średnie' : 'Silne',
         color: strength <= 1 ? '#EF4444' : strength <= 3 ? '#F59E0B' : '#10B981'
     };
+}
+
+function validateNameField(input, fieldName) {
+    const value = input.value.trim();
+    
+    if (!value) {
+        showFieldError(input, `${fieldName} jest wymagane`);
+        return false;
+    }
+    
+    if (value.length < 2) {
+        showFieldError(input, `${fieldName} musi mieć min. 2 znaki`);
+        return false;
+    }
+    
+    // Regex: tylko litery (w tym polskie), spacje i myślniki
+    const nameRegex = /^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s\-]+$/;
+    if (!nameRegex.test(value)) {
+        showFieldError(input, `${fieldName} może zawierać tylko litery, spacje i myślniki`);
+        return false;
+    }
+    
+    clearFieldError(input);
+    return true;
 }
 
 function validateEmailField(input) {

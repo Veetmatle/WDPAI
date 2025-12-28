@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Rejestracja - Smart Expense Tracker</title>
+    <title>Rejestracja - ChronoCash</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
     <link rel="stylesheet" href="/public/styles/common.css"/>
@@ -53,7 +53,7 @@
                 <div class="register-input-wrapper">
                     <span class="material-symbols-outlined register-input-icon">mail</span>
                     <input type="email" name="email" id="email" required maxlength="255"
-                        class="register-input register-input-with-icon"
+                        class="register-input"
                         placeholder="jan@example.com">
                 </div>
             </div>
@@ -64,7 +64,7 @@
                 <div class="register-input-wrapper">
                     <span class="material-symbols-outlined register-input-icon">lock</span>
                     <input type="password" name="password" id="password" required minlength="8"
-                        class="register-input register-input-with-icon register-input-password"
+                        class="register-input register-input-password"
                         placeholder="Minimum 8 znaków">
                     <button type="button" class="register-password-toggle" data-target="password">
                         <span class="material-symbols-outlined">visibility_off</span>
@@ -87,7 +87,7 @@
                 <div class="register-input-wrapper">
                     <span class="material-symbols-outlined register-input-icon">lock</span>
                     <input type="password" name="password_confirm" id="password_confirm" required
-                        class="register-input register-input-with-icon register-input-password"
+                        class="register-input register-input-password"
                         placeholder="Powtórz hasło">
                     <button type="button" class="register-password-toggle" data-target="password_confirm">
                         <span class="material-symbols-outlined">visibility_off</span>

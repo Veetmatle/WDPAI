@@ -252,6 +252,7 @@ function showFieldError(input, message) {
     wrapper.appendChild(errorEl);
 }
 
+// Czyści błędy przy polach formularza
 function clearFieldError(input) {
     const wrapper = input.closest('.add-expense-field') || input.parentElement;
     wrapper.classList.remove('has-error');
@@ -262,6 +263,7 @@ function clearFieldError(input) {
     }
 }
 
+// Pokazuje powiadomienia na górze ekranu
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;

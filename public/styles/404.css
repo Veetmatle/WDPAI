@@ -1,7 +1,4 @@
-/**
- * 404 Error Page Styles
- */
-
+/* główny kontener strony 404 */
 .error-page {
     min-height: 100vh;
     display: flex;
@@ -13,6 +10,7 @@
     background-color: var(--color-background-dark);
 }
 
+/* Wewnętrzny kontener na treść (ogranicza szerokość) */
 .error-content {
     display: flex;
     flex-direction: column;
@@ -20,6 +18,7 @@
     max-width: 400px;
 }
 
+/* Kółko z ikoną i kodem błędu */
 .error-icon-wrapper {
     width: 120px;
     height: 120px;
@@ -34,6 +33,7 @@
     position: relative;
 }
 
+/* Definicja animacji pulsowania */
 @keyframes pulse {
     0%, 100% {
         transform: scale(1);
@@ -45,11 +45,13 @@
     }
 }
 
+/* Ikona wewnątrz kółka (nad numerem) */
 .error-icon-wrapper .material-symbols-outlined {
     font-size: 32px;
     color: rgba(255, 255, 255, 0.7);
 }
 
+/* Sam numer błędu wewnątrz kółka */
 .error-icon-wrapper .error-code {
     font-size: 2rem;
     font-weight: 800;
@@ -58,6 +60,7 @@
     margin: 0;
 }
 
+/* Nagłówek "Strona nie znaleziona" */
 .error-title {
     font-size: 1.5rem;
     font-weight: 600;
@@ -65,12 +68,14 @@
     margin-bottom: var(--spacing-2);
 }
 
+/* Opis błędu pod nagłówkiem */
 .error-message {
     color: var(--color-text-secondary);
     margin-bottom: var(--spacing-8);
     max-width: 400px;
 }
 
+/* Kontener na przyciski (wróć ... )*/
 .error-actions {
     display: flex;
     flex-direction: column;
@@ -79,6 +84,7 @@
     max-width: 300px;
 }
 
+/* Styl bazowy dla wszystkich przycisków na 404 */
 .error-btn {
     display: flex;
     align-items: center;
@@ -91,21 +97,25 @@
     transition: var(--transition-all);
 }
 
+/* Główny przycisk (gradientowy) */
 .error-btn-primary {
     background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
     color: white;
 }
 
+/* Efekt najechania na główny przycisk */
 .error-btn-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
 }
 
+/* II przycisk (ciemny, bez gradientu) */
 .error-btn-secondary {
     background-color: var(--color-surface-dark);
     color: var(--color-text-primary);
 }
 
+/* fun fact hover*/
 .error-btn-secondary:hover {
     background-color: var(--color-surface-hover);
 }
@@ -119,6 +129,7 @@
     max-width: 400px;
 }
 
+/* Tekst ff */
 .error-fun-fact p {
     display: flex;
     align-items: flex-start;
@@ -128,12 +139,13 @@
     margin: 0;
 }
 
+/* Ikonka w ff */
 .error-fun-fact .material-symbols-outlined {
     color: var(--color-warning);
     flex-shrink: 0;
 }
 
-/* Footer */
+/* stopka */
 .error-footer {
     position: absolute;
     bottom: var(--spacing-4);
