@@ -1,11 +1,7 @@
-/**
- * Edit Receipt page JavaScript
- */
-
 let itemCounter = 0;
 
+// Spróbuj pobrać istniejące itemki z globalnej zmiennej (ustawionej w szablonie)
 document.addEventListener('DOMContentLoaded', function() {
-    // Load existing items
     if (existingItems.length > 0) {
         existingItems.forEach(item => {
             addItemRow(item.product_name, item.price, item.quantity || 1, item.category_id);
@@ -14,18 +10,15 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('no-items-msg').classList.remove('hidden');
     }
     
-    // Add item button
     document.getElementById('add-item-btn').addEventListener('click', function() {
         addItemRow();
     });
     
-    // Form submit handler
     document.getElementById('editForm').addEventListener('submit', handleEditSubmit);
 });
 
-/**
- * Add new item row
- */
+
+// Dodaj nowy wiersz itemka, ładuje dane jeśli jakieś były podane
 function addItemRow(name = '', price = '', quantity = 1, categoryId = '') {
     const container = document.getElementById('items-container');
     document.getElementById('no-items-msg').classList.add('hidden');
@@ -64,7 +57,7 @@ function addItemRow(name = '', price = '', quantity = 1, categoryId = '') {
     
     container.appendChild(itemDiv);
     
-    // Add event listeners
+    // Dodaj nasłuchiwanie na przyciski usuwania i zmiany wartości nad dodanym wierszu
     itemDiv.querySelector('.edit-receipt-item-remove').addEventListener('click', function() {
         removeItem(this.dataset.itemId);
     });
@@ -75,9 +68,7 @@ function addItemRow(name = '', price = '', quantity = 1, categoryId = '') {
     calculateTotal();
 }
 
-/**
- * Remove item row
- */
+// Usuwa itemek, przelicza
 function removeItem(itemId) {
     const item = document.getElementById(`item-${itemId}`);
     if (item) {
@@ -90,9 +81,8 @@ function removeItem(itemId) {
     }
 }
 
-/**
- * Calculate total from items
- */
+
+// Przelicza całkowite value paragonu po w update
 function calculateTotal() {
     const items = document.querySelectorAll('#items-container > div');
     let total = 0;
@@ -108,14 +98,14 @@ function calculateTotal() {
     }
 }
 
-/**
- * Handle form submit
- */
+
+// Obsługa zapisu + przekierowanie po edycji
 async function handleEditSubmit(e) {
-    e.preventDefault();
+    e.preventDefault(); // Stop dla odświeżania, JS obsłuży
     
     const formData = new FormData(this);
     
+    // Wysyła dane do API
     try {
         const response = await fetch('/api/receipt/update', {
             method: 'POST',
@@ -124,6 +114,7 @@ async function handleEditSubmit(e) {
         
         const data = await response.json();
         
+        // Jeśli sukces, przekieruj do podglądu paragonu
         if (data.success) {
             window.location.href = '/receipt?id=' + receiptId;
         } else {

@@ -1,7 +1,6 @@
-/**
- * Settings page JavaScript
- */
+// settings.js
 
+// Inicjalizacja po załadowaniu strony
 document.addEventListener('DOMContentLoaded', function() {
     initPasswordToggles();
     initPasswordStrength();

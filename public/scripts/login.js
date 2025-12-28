@@ -1,12 +1,11 @@
-/**
- * Login Page JavaScript
- */
 
+// Dodaj listebnery po załadowaniu strony
 document.addEventListener('DOMContentLoaded', function() {
     initLoginForm();
     initPasswordToggle();
 });
 
+// Inicjalizacja formularza logowania
 function initLoginForm() {
     const form = document.querySelector('.login-form');
     if (!form) return;
@@ -15,14 +14,13 @@ function initLoginForm() {
     const passwordInput = form.querySelector('input[name="password"]');
     const submitBtn = form.querySelector('button[type="submit"]');
     
-    // Real-time validation
     if (emailInput) {
+        // blur - walidacja po opuszczeniu pola
         emailInput.addEventListener('blur', function() {
             validateEmailField(this);
         });
     }
     
-    // Form submission
     form.addEventListener('submit', function(e) {
         let isValid = true;
         

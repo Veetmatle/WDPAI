@@ -1,13 +1,11 @@
-/**
- * Register Page JavaScript
- */
-
+// Dodaj listenery po załadowaniu strony
 document.addEventListener('DOMContentLoaded', function() {
     initRegisterForm();
     initPasswordStrength();
     initPasswordToggles();
 });
 
+// Inicjalizacja formularza rejestracji
 function initRegisterForm() {
     const form = document.querySelector('.register-form');
     if (!form) return;
@@ -16,21 +14,18 @@ function initRegisterForm() {
     const passwordInput = form.querySelector('input[name="password"]');
     const confirmInput = form.querySelector('input[name="password_confirm"]');
     
-    // Email validation on blur
     if (emailInput) {
         emailInput.addEventListener('blur', function() {
             validateEmailField(this);
         });
     }
     
-    // Password match validation
     if (confirmInput && passwordInput) {
         confirmInput.addEventListener('input', function() {
             validatePasswordMatch(passwordInput, confirmInput);
         });
     }
     
-    // Form submission validation
     form.addEventListener('submit', function(e) {
         let isValid = true;
         
