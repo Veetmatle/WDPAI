@@ -15,7 +15,7 @@
 $pageTitle = 'Statystyki';
 $activePage = 'stats';
 
-// Znajdź maksymalną wartość dla skalowania wykresu kategorii
+// max wartość dla skalowania wykresu kategorii
 $maxCategoryValue = 0;
 foreach ($categoryExpenses as $cat) {
     if ((float)$cat['total'] > $maxCategoryValue) {
