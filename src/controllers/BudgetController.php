@@ -134,7 +134,6 @@ class BudgetController extends AppController
         $userId = $this->getUserId();
 
         if ($this->isPost()) {
-            // Check which action
             $action = $_POST['action'] ?? 'update_profile';
             
             if ($action === 'update_password' || isset($_POST['current_password'])) {

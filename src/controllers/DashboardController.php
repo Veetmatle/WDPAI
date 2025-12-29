@@ -27,7 +27,7 @@ class DashboardController extends AppController
         $currentMonth = (int)date('n');
         $currentYear = (int)date('Y');
 
-        // Pobierz dane użytkownika - konwertuj obiekt na tablicę
+        // Pobierz dane użytkownika - konwertuj obiekt (json) na tablicę
         $userObj = $this->userRepository->getUserById($userId);
         $user = $userObj ? $userObj->toArray() : [
             'name' => $_SESSION['user_name'] ?? 'Użytkownik',

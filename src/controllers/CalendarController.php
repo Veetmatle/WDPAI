@@ -5,7 +5,7 @@ require_once __DIR__ . '/../repository/ReceiptRepository.php';
 
 /**
  * Calendar Controller
- * Handles the calendar view for expense tracking
+ * Handle the calendar view for expense tracking
  */
 class CalendarController extends AppController
 {

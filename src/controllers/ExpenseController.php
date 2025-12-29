@@ -7,7 +7,7 @@ require_once __DIR__ . '/../repository/BudgetRepository.php';
 
 /**
  * Expense Controller
- * Handles expense management: view daily expenses, add new expenses
+ * Handles expense management: view daily expenses, add new expense
  */
 class ExpenseController extends AppController
 {

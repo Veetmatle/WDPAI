@@ -7,8 +7,8 @@ require_once __DIR__ . '/../repository/CategoryRepository.php';
 require_once __DIR__ . '/../services/OCRService.php';
 
 /**
- * API Controller
- * Handles JSON API endpoints for AJAX requests
+ * API Controller for JS
+ * Handles JSON API endpoints for AJAX request (json responses not rendered views)
  */
 class ApiController extends AppController
 {
@@ -210,7 +210,6 @@ class ApiController extends AppController
         }
 
         try {
-            // Calculate total from items if items provided
             if (!empty($items)) {
                 $totalAmount = 0;
                 foreach ($items as $item) {

@@ -6,7 +6,7 @@ require_once __DIR__ . '/../repository/CategoryRepository.php';
 
 /**
  * Receipt Controller
- * Handles receipt details view
+ * Handles receipt detail view
  */
 class ReceiptController extends AppController
 {
@@ -61,7 +61,6 @@ class ReceiptController extends AppController
         $this->requireLogin();
         $userId = $_SESSION['user_id'];
 
-        // Obsługa POST
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $receiptId = isset($_POST['receipt_id']) ? (int)$_POST['receipt_id'] : 0;
             $csrfToken = $_POST['csrf_token'] ?? '';
@@ -70,7 +69,6 @@ class ReceiptController extends AppController
             // Sanitize return URL
             $returnUrl = $this->sanitizeReturnUrl($returnUrl);
 
-            // Walidacja CSRF
             if (!$this->validateCSRF($csrfToken)) {
                 $_SESSION['error'] = 'Nieprawidłowy token bezpieczeństwa. Odśwież stronę i spróbuj ponownie.';
                 header('Location: ' . $returnUrl);

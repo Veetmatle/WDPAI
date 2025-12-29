@@ -89,7 +89,7 @@ class AuthMiddleware
     }
 
     /**
-     * Validate CSRF token
+     * Validate CSRF toke
      */
     public static function validateCsrfToken(?string $token): bool
     {

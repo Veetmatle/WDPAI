@@ -162,7 +162,7 @@ class SecurityController extends AppController
     }
 
     /**
-     * Handle logout
+     * Handle logou
      */
     public function logout(): void
     {

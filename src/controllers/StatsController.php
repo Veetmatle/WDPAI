@@ -6,7 +6,7 @@ require_once __DIR__ . '/../repository/BudgetRepository.php';
 
 /**
  * Stats Controller
- * Handles statistics and charts
+ * Handles statistics and chart
  */
 class StatsController extends AppController
 {

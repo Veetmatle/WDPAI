@@ -33,7 +33,7 @@ abstract class AppController
     }
 
     /**
-     * Require user to be logged in
+     * Require user to be logged in - otherwise kick to login page
      */
     protected function requireLogin(): void
     {
@@ -56,7 +56,7 @@ abstract class AppController
             $data['user'] = AuthMiddleware::getUser();
         }
         
-        // Extract data to variables
+        // Extract data to variables (['login' => 'Lask'] => $login = 'Lask')
         extract($data);
         
         $templatePath = __DIR__ . '/../../public/views/' . $view . '.php';
@@ -79,7 +79,7 @@ abstract class AppController
     }
 
     /**
-     * Return JSON response
+     * Return JSON response (for js)
      */
     protected function json(array $data, int $statusCode = 200): void
     {
@@ -109,7 +109,7 @@ abstract class AppController
     }
 
     /**
-     * Sanitize string input
+     * Sanitize string input (white space trim + HTML special chars for injection prevention)
      */
     protected function sanitize(string $input): string
     {
