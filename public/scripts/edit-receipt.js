@@ -99,6 +99,7 @@ function calculateTotal() {
 }
 
 
+// FETCH APIIIIIIIIIIIIIIIIIIIIIIIII
 // Obsługa zapisu + przekierowanie po edycji
 async function handleEditSubmit(e) {
     e.preventDefault(); // Stop dla odświeżania, JS obsłuży

@@ -18,6 +18,7 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $selectedDate)) {
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title><?= htmlspecialchars($pageTitle) ?> - ChronoCashr</title>
+    <link rel="icon" href="data:,">
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
     <link rel="stylesheet" href="/public/styles/common.css"/>
@@ -110,7 +111,7 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $selectedDate)) {
         </div>
 
         <!-- Manual Form -->
-        <form id="expenseForm" method="POST" class="add-expense-form">
+        <form id="expenseForm" method="POST" class="add-expense-form" novalidate>
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
             
             <!-- Store Name -->

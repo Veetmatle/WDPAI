@@ -42,7 +42,6 @@ function initModeSwitcher() {
 
 // Ręczne wpisywanie wydatku
 function initManualForm() {
-
     // pobieranie formularza wydatków
     const form = document.getElementById('expenseForm');
     if (!form) return;
@@ -53,31 +52,69 @@ function initManualForm() {
         dateInput.value = new Date().toISOString().split('T')[0];
     }
     
-    // Walidacja - listener na foemularzu czekajacy na submita
-    form.addEventListener('submit', function(e) {
-        const storeName = form.querySelector('input[name="store_name"]');
-        const amount = form.querySelector('input[name="total_amount"]');
+    // Obsługa submit przez Fetch API (jak w edit-receipt.js)
+    form.addEventListener('submit', handleAddSubmit);
+}
+
+/**
+ * Obsługa wysyłania formularza przez Fetch API
+ * Wysyła dane do /api/expense/add i obsługuje odpowiedź JSON
+ */
+async function handleAddSubmit(e) {
+    e.preventDefault(); // Stop dla odświeżania, JS obsłuży
+    
+    const form = e.target;
+    const storeName = form.querySelector('input[name="store_name"]');
+    const amount = form.querySelector('input[name="total_amount"]');
+    
+    // Walidacja po stronie klienta
+    let isValid = true;
+    
+    if (storeName && !storeName.value.trim()) {
+        showFieldError(storeName, 'Nazwa sklepu jest wymagana');
+        isValid = false;
+    } else if (storeName) {
+        clearFieldError(storeName);
+    }
+    
+    if (amount && (!amount.value || parseFloat(amount.value) <= 0)) {
+        showFieldError(amount, 'Podaj prawidłową kwotę');
+        isValid = false;
+    } else if (amount) {
+        clearFieldError(amount);
+    }
+    
+    if (!isValid) {
+        return;
+    }
+    
+    // Przygotowanie danych formularza
+    const formData = new FormData(form);
+    
+    // Wysyłka przez Fetch API
+    try {
+        const response = await fetch('/api/expense/add', {
+            method: 'POST',
+            body: formData
+        });
         
-        let isValid = true;
+        const data = await response.json();
         
-        if (storeName && !storeName.value.trim()) {
-            showFieldError(storeName, 'Nazwa sklepu jest wymagana');
-            isValid = false;
+        // Jeśli sukces, przekieruj do podglądu paragonu
+        if (data.success) {
+            showNotification('Wydatek został dodany!', 'success');
+            window.location.replace('/receipt?id=' + data.receipt_id);
+        } else {
+            showNotification('Błąd: ' + (data.error || 'Nie udało się zapisać'), 'error');
         }
-        
-        if (amount && (!amount.value || parseFloat(amount.value) <= 0)) {
-            showFieldError(amount, 'Podaj prawidłową kwotę');
-            isValid = false;
-        }
-        
-        if (!isValid) {
-            e.preventDefault();
-        }
-    });
+    } catch (error) {
+        console.error('Fetch error:', error);
+        showNotification('Wystąpił błąd podczas zapisywania', 'error');
+    }
 }
 
 
-// Wgrywanie pliku przez OCRa
+// OCR - nie działa, do poprawki
 function initOCRUpload() {
     const dropZone = document.querySelector('.add-expense-ocr-dropzone');
     const fileInput = document.querySelector('.add-expense-ocr-input');

@@ -2,6 +2,7 @@
 
 require_once 'AppController.php';
 require_once __DIR__ . '/../repository/UserRepository.php';
+require_once __DIR__ . '/../attributes/HttpMethod.php';
 
 /**
  * Security Controller
@@ -20,6 +21,7 @@ class SecurityController extends AppController
     /**
      * Handle login
      */
+    #[HttpMethod(['GET', 'POST'])]
     public function login(): void
     {
         if ($this->isGet()) {
@@ -78,6 +80,7 @@ class SecurityController extends AppController
     /**
      * Handle registration
      */
+    #[HttpMethod(['GET', 'POST'])]
     public function register(): void
     {
         if ($this->isGet()) {
@@ -162,8 +165,9 @@ class SecurityController extends AppController
     }
 
     /**
-     * Handle logou
+     * Handle logout
      */
+    #[HttpMethod(['GET', 'POST'])]
     public function logout(): void
     {
         AuthMiddleware::logout();

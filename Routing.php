@@ -8,6 +8,7 @@ require_once 'src/controllers/CalendarController.php';
 require_once 'src/controllers/StatsController.php';
 require_once 'src/controllers/BudgetController.php';
 require_once 'src/controllers/ApiController.php';
+require_once 'src/attributes/AttributeValidator.php';
 
 class Routing 
 {
@@ -60,6 +61,20 @@ class Routing
         $route = self::$routes[$path];
         $controllerName = $route['controller'];
         $action = $route['action'];
+
+        // Walidacja metody HTTP za pomocą atrybutów
+        $requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+        $validation = AttributeValidator::validateHttpMethod($controllerName, $action, $requestMethod);
+        
+        if (!$validation['allowed']) {
+            http_response_code(405);
+            header('Allow: ' . implode(', ', $validation['allowedMethods']));
+            echo json_encode([
+                'error' => true,
+                'message' => $validation['message']
+            ]);
+            return;
+        }
 
         // Utwórz instancję kontrolera i wywołaj akcję
         $controller = new $controllerName();
