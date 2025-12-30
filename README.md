@@ -190,7 +190,7 @@ Przy rejestracji nowego usera automatycznie kopiowane są domyślne kategorie.
 
 ### Diagram ERD
 
-<img width="1065" height="771" alt="Diagram ERD bazy danych" src="https://github.com/user-attachments/assets/671f61af-96a9-4900-b59c-0b9b8ba05b16" />
+<img width="954" height="810" alt="image" src="https://github.com/user-attachments/assets/89d4c281-f0ef-46f2-8879-020df90c7f72" />
 
 ## Bezpieczeństwo 
 
