@@ -98,6 +98,8 @@ WDPAI/
 │       ├── components/
 │       │   └── bottom-nav.php      # Dolna nawigacja
 │       ├── dashboard.php           # Panel główny
+|       |-- admin-add-user.php      # Dodawanie usera przez admina
+|       |-- admin.php               # Widok admina
 │       ├── calendar.php            # Widok kalendarza
 │       ├── stats.php               # Statystyki
 │       ├── add-expense.php         # Dodawanie wydatku
@@ -110,6 +112,7 @@ WDPAI/
 │   │   ├── AttributeValidator.php  # Walidator atrybutów PHP 8
 │   │   └── HttpMethod.php          # Atrybut metod HTTP
 │   ├── controllers/
+|   |   |-- AdminController.php     # Controller admina
 │   │   ├── AppController.php       # Bazowy kontroler
 │   │   ├── SecurityController.php  # Logowanie/rejestracja
 │   │   ├── DashboardController.php # Dashboard
@@ -261,3 +264,16 @@ Przy rejestracji nowego usera automatycznie kopiowane są domyślne kategorie.
 
 ### Edycja paragonu
 <img width="695" height="953" alt="Edycja paragonu" src="https://github.com/user-attachments/assets/18326894-902a-458f-9f19-a55fe0f3690d" />
+
+### Widok admina
+<img width="1892" height="934" alt="image" src="https://github.com/user-attachments/assets/3ba2b5d9-7903-4f07-b9f5-d183a7d2234f" />
+
+### Dodawanie usera przez admina
+<img width="1908" height="908" alt="image" src="https://github.com/user-attachments/assets/48cb0931-f438-4fee-bbad-8f06bd6a24de" />
+
+### Zablokowany user
+<img width="632" height="845" alt="image" src="https://github.com/user-attachments/assets/caaee115-d571-427d-ae69-ebc2cc50a054" />
+
+
+
+
