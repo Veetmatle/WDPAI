@@ -1,11 +1,9 @@
-// Dodaj listenery po załadowaniu strony
 document.addEventListener('DOMContentLoaded', function() {
     initRegisterForm();
     initPasswordStrength();
     initPasswordToggles();
 });
 
-// Inicjalizacja formularza rejestracji
 function initRegisterForm() {
     const form = document.querySelector('.register-form');
     if (!form) return;
@@ -89,7 +87,6 @@ function initPasswordStrength() {
         
         const strength = checkPasswordStrength(value);
         
-        // Aktualizuj paski siły (4 paski)
         strengthBars.forEach(function(bar, index) {
             if (index < strength.score) {
                 bar.style.backgroundColor = strength.color;
@@ -98,7 +95,6 @@ function initPasswordStrength() {
             }
         });
         
-        // Aktualizuj tekst podpowiedzi
         if (passwordHint) {
             passwordHint.textContent = strength.label;
             passwordHint.style.color = strength.color;
@@ -152,7 +148,6 @@ function validateNameField(input, fieldName) {
         return false;
     }
     
-    // Regex: tylko litery (w tym polskie), spacje i myślniki
     const nameRegex = /^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s\-]+$/;
     if (!nameRegex.test(value)) {
         showFieldError(input, `${fieldName} może zawierać tylko litery, spacje i myślniki`);

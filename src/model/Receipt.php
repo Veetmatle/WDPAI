@@ -1,9 +1,5 @@
 <?php
 
-/**
- * Receipt Model
- * Represents a receipt/purchase entity
- */
 class Receipt 
 {
     private int $id;

@@ -1,13 +1,9 @@
 <?php
-/** @var array $categories */
-/** @var array $budget */
 $pageTitle = 'Dodaj wydatek';
 $activePage = 'add';
 
-// Pobierz datę z parametru URL lub ustaw dzisiejszą
 $selectedDate = $_GET['date'] ?? date('Y-m-d');
 
-// Walidacja formatu daty
 if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $selectedDate)) {
     $selectedDate = date('Y-m-d');
 }

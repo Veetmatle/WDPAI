@@ -3,24 +3,13 @@
 
 class OCRService
 {
-    /**
-     * Process receipt image and extract data
-     * 
-     * @param string $imagePath Path to the receipt image
-     * @return array Extracted receipt data
-     */
     public function processReceipt(string $imagePath): array
     {
         return $this->simulateOCRResult();
     }
 
-    /**
-     * Simulate OCR result for demonstration
-     * Returns sample data that resembles real receipt parsing
-     */
     private function simulateOCRResult(): array
     {
-        // Simulate some variation in recognized data
         $stores = [
             ['name' => 'Biedronka', 'items' => $this->getBiedronkaItems()],
             ['name' => 'Lidl', 'items' => $this->getLidlItems()],
@@ -32,7 +21,6 @@ class OCRService
         $selected = $stores[array_rand($stores)];
         $items = $selected['items'];
         
-        // Calculate total
         $total = 0;
         foreach ($items as $item) {
             $total += $item['price'] * ($item['quantity'] ?? 1);
@@ -43,15 +31,12 @@ class OCRService
             'date' => date('Y-m-d'),
             'items' => $items,
             'total_amount' => round($total, 2),
-            'confidence' => rand(75, 95) / 100, // Simulated OCR confidence
+            'confidence' => rand(75, 95) / 100,
             'raw_text' => $this->generateRawText($selected['name'], $items, $total),
-            'needs_review' => true // Flag to indicate user should verify
+            'needs_review' => true
         ];
     }
 
-    /**
-     * Sample items for Biedronka
-     */
     private function getBiedronkaItems(): array
     {
         return [
@@ -63,9 +48,6 @@ class OCRService
         ];
     }
 
-    /**
-     * Sample items for Lidl
-     */
     private function getLidlItems(): array
     {
         return [
@@ -77,9 +59,6 @@ class OCRService
         ];
     }
 
-    /**
-     * Sample items for Żabka
-     */
     private function getZabkaItems(): array
     {
         return [
@@ -90,9 +69,6 @@ class OCRService
         ];
     }
 
-    /**
-     * Sample items for Rossmann
-     */
     private function getRossmannItems(): array
     {
         return [
@@ -103,9 +79,6 @@ class OCRService
         ];
     }
 
-    /**
-     * Sample items for Kaufland
-     */
     private function getKauflandItems(): array
     {
         return [
@@ -118,9 +91,6 @@ class OCRService
         ];
     }
 
-    /**
-     * Generate simulated raw OCR text
-     */
     private function generateRawText(string $storeName, array $items, float $total): string
     {
         $text = strtoupper($storeName) . "\n";

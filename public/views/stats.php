@@ -1,21 +1,7 @@
 <?php
-/** @var int $month */
-/** @var int $year */
-/** @var string $monthName */
-/** @var array $categoryExpenses */
-/** @var float $totalExpenses */
-/** @var array|null $budget */
-/** @var array $monthlySummary */
-/** @var array $monthlyReceipts */
-/** @var int $prevMonth */
-/** @var int $prevYear */
-/** @var int $nextMonth */
-/** @var int $nextYear */
-
 $pageTitle = 'Statystyki';
 $activePage = 'stats';
 
-// max wartość dla skalowania wykresu kategorii
 $maxCategoryValue = 0;
 foreach ($categoryExpenses as $cat) {
     if ((float)$cat['total'] > $maxCategoryValue) {
@@ -24,7 +10,6 @@ foreach ($categoryExpenses as $cat) {
 }
 if ($maxCategoryValue == 0) $maxCategoryValue = 100;
 
-// Przygotuj dane dla wykresu miesięcznego
 $monthNames = ['', 'Sty', 'Lut', 'Mar', 'Kwi', 'Maj', 'Cze', 'Lip', 'Sie', 'Wrz', 'Paź', 'Lis', 'Gru'];
 $chartData = [];
 $summaryReversed = array_reverse($monthlySummary ?? []);

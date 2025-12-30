@@ -1,18 +1,10 @@
 <?php
-/** @var float $monthlyTotal */
-/** @var array $budget */
-/** @var array $recentReceipts */
-/** @var array $expensesSummary */
-/** @var array $user */
-
 $pageTitle = 'Dashboard';
 $activePage = 'dashboard';
 
-// dane do wykresu
 $chartData = [];
 $monthNames = ['', 'Sty', 'Lut', 'Mar', 'Kwi', 'Maj', 'Cze', 'Lip', 'Sie', 'Wrz', 'Paź', 'Lis', 'Gru'];
 
-// expensesSummary posortowane od najnowszego (z bazki), odwrócić dla wykresu
 $summaryReversed = array_reverse($expensesSummary ?? []);
 
 foreach ($summaryReversed as $data) {
@@ -22,19 +14,17 @@ foreach ($summaryReversed as $data) {
     ];
 }
 
-// Jeśli nie ma danych z miesięcy 4 to i tak dodać puste słupki
 while (count($chartData) < 4) {
     array_unshift($chartData, ['label' => '-', 'value' => 0]);
 }
 
-// Znajdź maksymalną wartość dla skalowania
 $maxValue = 0;
 foreach ($chartData as $d) {
     if ($d['value'] > $maxValue) {
         $maxValue = $d['value'];
     }
 }
-if ($maxValue == 0) $maxValue = 1000; // domyślna skala
+if ($maxValue == 0) $maxValue = 1000;
 ?>
 <!DOCTYPE html>
 <html lang="pl">

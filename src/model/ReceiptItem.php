@@ -1,9 +1,5 @@
 <?php
 
-/**
- * ReceiptItem Model
- * Represents a single product/item on a receipt
- */
 class ReceiptItem 
 {
     private int $id;

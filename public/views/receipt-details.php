@@ -1,7 +1,4 @@
 <?php
-/** @var array $receipt */
-/** @var array $items */
-
 $pageTitle = 'Szczegóły paragonu';
 $activePage = '';
 ?>

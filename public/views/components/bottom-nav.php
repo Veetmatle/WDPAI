@@ -1,8 +1,4 @@
 <?php
-/**
- * Bottom Navigation Component
- * @var string $activePage - current active page (dashboard, calendar, add, stats, settings)
- */
 $activePage = $activePage ?? '';
 ?>
 <nav class="bottom-nav">

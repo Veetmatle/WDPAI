@@ -1,6 +1,5 @@
 let itemCounter = 0;
 
-// Spróbuj pobrać istniejące itemki z globalnej zmiennej (ustawionej w szablonie)
 document.addEventListener('DOMContentLoaded', function() {
     if (existingItems.length > 0) {
         existingItems.forEach(item => {
@@ -18,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// Dodaj nowy wiersz itemka, ładuje dane jeśli jakieś były podane
 function addItemRow(name = '', price = '', quantity = 1, categoryId = '') {
     const container = document.getElementById('items-container');
     document.getElementById('no-items-msg').classList.add('hidden');
@@ -57,7 +55,6 @@ function addItemRow(name = '', price = '', quantity = 1, categoryId = '') {
     
     container.appendChild(itemDiv);
     
-    // Dodaj nasłuchiwanie na przyciski usuwania i zmiany wartości nad dodanym wierszu
     itemDiv.querySelector('.edit-receipt-item-remove').addEventListener('click', function() {
         removeItem(this.dataset.itemId);
     });
@@ -68,7 +65,6 @@ function addItemRow(name = '', price = '', quantity = 1, categoryId = '') {
     calculateTotal();
 }
 
-// Usuwa itemek, przelicza
 function removeItem(itemId) {
     const item = document.getElementById(`item-${itemId}`);
     if (item) {
@@ -82,7 +78,6 @@ function removeItem(itemId) {
 }
 
 
-// Przelicza całkowite value paragonu po w update
 function calculateTotal() {
     const items = document.querySelectorAll('#items-container > div');
     let total = 0;
@@ -99,14 +94,11 @@ function calculateTotal() {
 }
 
 
-// FETCH APIIIIIIIIIIIIIIIIIIIIIIIII
-// Obsługa zapisu + przekierowanie po edycji
 async function handleEditSubmit(e) {
-    e.preventDefault(); // Stop dla odświeżania, JS obsłuży
+    e.preventDefault();
     
     const formData = new FormData(this);
     
-    // Wysyła dane do API
     try {
         const response = await fetch('/api/receipt/update', {
             method: 'POST',
@@ -115,7 +107,6 @@ async function handleEditSubmit(e) {
         
         const data = await response.json();
         
-        // Jeśli sukces, przekieruj do podglądu paragonu
         if (data.success) {
             window.location.href = '/receipt?id=' + receiptId;
         } else {

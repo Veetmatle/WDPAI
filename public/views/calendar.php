@@ -49,7 +49,6 @@ $activePage = 'calendar';
                     $isToday = $dayData['is_today'];
                     $isCurrentMonth = $dayData['is_current_month'];
                     
-                    // Determine link target - reflink depending on (link = hasEpenses ? daily-expenses : add-expense)
                     if ($hasExpenses) {
                         $link = "/daily-expenses?date=" . $dateStr;
                     } else {

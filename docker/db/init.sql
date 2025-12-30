@@ -18,6 +18,9 @@ CREATE TABLE users (
     password_hash VARCHAR(255) NOT NULL,
     name VARCHAR(100),
     surname VARCHAR(100),
+    is_admin BOOLEAN DEFAULT FALSE,
+    is_blocked BOOLEAN DEFAULT FALSE,
+    last_login TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -98,14 +101,23 @@ INSERT INTO categories (user_id, name, icon_name, color_hex, is_default) VALUES
 (NULL, 'Inne', 'more_horiz', '#6B7280', TRUE);
 
 -- =====================================================
--- UŻYTKOWNIK TESTOWY (Hasło: test123)
+-- UŻYTKOWNIK TESTOWY (Hasło: test123) + ADMIN (Hasło: admin123)
 -- =====================================================
+INSERT INTO users (email, password_hash, name, surname, is_admin) VALUES
+('admin@example.com', '$argon2id$v=19$m=65536,t=4,p=1$NmJPMVdKcExoL1VFQjBwaA$cx1psTcaV9eDLKknrCci7HWbTtXIKnAHjHVpPdDecc0', 'Admin', 'System', TRUE);
+
 INSERT INTO users (email, password_hash, name, surname) VALUES
 ('test@example.com', '$2y$10$Ai/N8MZpAbEf3GJOfO.9Ku//Oxpq32zFcZhkb8OzWeBw5AiQLhBgm', 'Jan', 'Kowalski');
 
--- Skopiowanie kategorii domyślnych dla testera
+-- Skopiowanie kategorii domyślnych dla admina
 INSERT INTO categories (user_id, name, icon_name, color_hex, is_default)
 SELECT 1, name, icon_name, color_hex, FALSE
+FROM categories
+WHERE is_default = TRUE;
+
+-- Skopiowanie kategorii domyślnych dla testera
+INSERT INTO categories (user_id, name, icon_name, color_hex, is_default)
+SELECT 2, name, icon_name, color_hex, FALSE
 FROM categories
 WHERE is_default = TRUE;
 
@@ -113,42 +125,42 @@ WHERE is_default = TRUE;
 -- DANE PRZYKŁADOWE - insert
 -- =====================================================
 
--- Przykładowe budżety
+-- Przykładowe budżety (dla usera id=2 - test@example.com)
 INSERT INTO budgets (user_id, month, year, amount_limit) VALUES
-(1, EXTRACT(MONTH FROM CURRENT_DATE)::INTEGER, EXTRACT(YEAR FROM CURRENT_DATE)::INTEGER, 3000.00),
-(1, EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month')::INTEGER, EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month')::INTEGER, 2800.00),
-(1, EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '2 months')::INTEGER, EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '2 months')::INTEGER, 2500.00);
+(2, EXTRACT(MONTH FROM CURRENT_DATE)::INTEGER, EXTRACT(YEAR FROM CURRENT_DATE)::INTEGER, 3000.00),
+(2, EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month')::INTEGER, EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month')::INTEGER, 2800.00),
+(2, EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '2 months')::INTEGER, EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '2 months')::INTEGER, 2500.00);
 
--- Przykładowe paragony
+-- Przykładowe paragony (dla usera id=2)
 INSERT INTO receipts (user_id, store_name, receipt_date, total_amount, notes) VALUES
-(1, 'Biedronka', CURRENT_DATE, 156.45, 'Zakupy tygodniowe'),
-(1, 'Żabka', CURRENT_DATE - INTERVAL '1 day', 32.50, 'Przekąski'),
-(1, 'Lidl', CURRENT_DATE - INTERVAL '2 days', 245.80, 'Duże zakupy'),
-(1, 'Orlen', CURRENT_DATE - INTERVAL '3 days', 280.00, 'Tankowanie'),
-(1, 'Rossmann', CURRENT_DATE - INTERVAL '5 days', 89.99, 'Kosmetyki'),
-(1, 'Media Expert', CURRENT_DATE - INTERVAL '7 days', 599.00, 'Elektronika'),
-(1, 'Allegro', CURRENT_DATE - INTERVAL '10 days', 150.00, 'Zakupy online'),
-(1, 'Kino Cinema City', CURRENT_DATE - INTERVAL '12 days', 65.00, 'Bilety do kina'),
-(1, 'Apteka', CURRENT_DATE - INTERVAL '15 days', 45.50, 'Leki'),
-(1, 'Kaufland', CURRENT_DATE - INTERVAL '20 days', 320.00, 'Zakupy spożywcze');
+(2, 'Biedronka', CURRENT_DATE, 156.45, 'Zakupy tygodniowe'),
+(2, 'Żabka', CURRENT_DATE - INTERVAL '1 day', 32.50, 'Przekąski'),
+(2, 'Lidl', CURRENT_DATE - INTERVAL '2 days', 245.80, 'Duże zakupy'),
+(2, 'Orlen', CURRENT_DATE - INTERVAL '3 days', 280.00, 'Tankowanie'),
+(2, 'Rossmann', CURRENT_DATE - INTERVAL '5 days', 89.99, 'Kosmetyki'),
+(2, 'Media Expert', CURRENT_DATE - INTERVAL '7 days', 599.00, 'Elektronika'),
+(2, 'Allegro', CURRENT_DATE - INTERVAL '10 days', 150.00, 'Zakupy online'),
+(2, 'Kino Cinema City', CURRENT_DATE - INTERVAL '12 days', 65.00, 'Bilety do kina'),
+(2, 'Apteka', CURRENT_DATE - INTERVAL '15 days', 45.50, 'Leki'),
+(2, 'Kaufland', CURRENT_DATE - INTERVAL '20 days', 320.00, 'Zakupy spożywcze');
 
--- Przykładowe pozycje na paragonach
+-- Przykładowe pozycje na paragonach (dla usera id=2)
 INSERT INTO receipt_items (receipt_id, product_name, category_id, price, quantity) VALUES
 -- Biedronka
-(1, 'Chleb', (SELECT id FROM categories WHERE user_id = 1 AND name = 'Jedzenie' LIMIT 1), 5.99, 2),
-(1, 'Mleko', (SELECT id FROM categories WHERE user_id = 1 AND name = 'Jedzenie' LIMIT 1), 4.50, 3),
-(1, 'Ser żółty', (SELECT id FROM categories WHERE user_id = 1 AND name = 'Jedzenie' LIMIT 1), 12.99, 1),
-(1, 'Jabłka', (SELECT id FROM categories WHERE user_id = 1 AND name = 'Jedzenie' LIMIT 1), 8.99, 1),
+(1, 'Chleb', (SELECT id FROM categories WHERE user_id = 2 AND name = 'Jedzenie' LIMIT 1), 5.99, 2),
+(1, 'Mleko', (SELECT id FROM categories WHERE user_id = 2 AND name = 'Jedzenie' LIMIT 1), 4.50, 3),
+(1, 'Ser żółty', (SELECT id FROM categories WHERE user_id = 2 AND name = 'Jedzenie' LIMIT 1), 12.99, 1),
+(1, 'Jabłka', (SELECT id FROM categories WHERE user_id = 2 AND name = 'Jedzenie' LIMIT 1), 8.99, 1),
 -- Żabka
-(2, 'Kawa', (SELECT id FROM categories WHERE user_id = 1 AND name = 'Jedzenie' LIMIT 1), 12.50, 1),
-(2, 'Kanapka', (SELECT id FROM categories WHERE user_id = 1 AND name = 'Jedzenie' LIMIT 1), 15.00, 1),
-(2, 'Woda', (SELECT id FROM categories WHERE user_id = 1 AND name = 'Jedzenie' LIMIT 1), 5.00, 1),
+(2, 'Kawa', (SELECT id FROM categories WHERE user_id = 2 AND name = 'Jedzenie' LIMIT 1), 12.50, 1),
+(2, 'Kanapka', (SELECT id FROM categories WHERE user_id = 2 AND name = 'Jedzenie' LIMIT 1), 15.00, 1),
+(2, 'Woda', (SELECT id FROM categories WHERE user_id = 2 AND name = 'Jedzenie' LIMIT 1), 5.00, 1),
 -- Orlen
-(4, 'Paliwo ON', (SELECT id FROM categories WHERE user_id = 1 AND name = 'Transport' LIMIT 1), 280.00, 1),
+(4, 'Paliwo ON', (SELECT id FROM categories WHERE user_id = 2 AND name = 'Transport' LIMIT 1), 280.00, 1),
 -- Media Expert
-(6, 'Słuchawki Bluetooth', (SELECT id FROM categories WHERE user_id = 1 AND name = 'Zakupy' LIMIT 1), 599.00, 1),
+(6, 'Słuchawki Bluetooth', (SELECT id FROM categories WHERE user_id = 2 AND name = 'Zakupy' LIMIT 1), 599.00, 1),
 -- Kino
-(8, 'Bilet do kina', (SELECT id FROM categories WHERE user_id = 1 AND name = 'Rozrywka' LIMIT 1), 32.50, 2);
+(8, 'Bilet do kina', (SELECT id FROM categories WHERE user_id = 2 AND name = 'Rozrywka' LIMIT 1), 32.50, 2);
 
 -- =====================================================
 -- TRIGGERY I FUNKCJE

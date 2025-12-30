@@ -3,10 +3,6 @@
 require_once 'Repository.php';
 require_once __DIR__ . '/../model/User.php';
 
-/**
- * User Repository
- * Handles all database operations for users
- */
 class UserRepository extends Repository
 {
     private static ?UserRepository $instance = null;
@@ -19,13 +15,10 @@ class UserRepository extends Repository
         return self::$instance;
     }
 
-    /**
-     * Get user by email
-     */
     public function getUserByEmail(string $email): ?User
     {
         $stmt = $this->database->connect()->prepare('
-            SELECT id, email, password_hash, name, surname, created_at 
+            SELECT id, email, password_hash, name, surname, is_admin, is_blocked, last_login, created_at 
             FROM users 
             WHERE email = :email
         ');
@@ -44,17 +37,17 @@ class UserRepository extends Repository
             $row['password_hash'],
             $row['name'],
             $row['surname'],
+            (bool) $row['is_admin'],
+            (bool) $row['is_blocked'],
+            $row['last_login'],
             $row['created_at']
         );
     }
 
-    /**
-     * Get user by ID
-     */
     public function getUserById(int $id): ?User
     {
         $stmt = $this->database->connect()->prepare('
-            SELECT id, email, password_hash, name, surname, created_at 
+            SELECT id, email, password_hash, name, surname, is_admin, is_blocked, last_login, created_at 
             FROM users 
             WHERE id = :id
         ');
@@ -73,13 +66,13 @@ class UserRepository extends Repository
             $row['password_hash'],
             $row['name'],
             $row['surname'],
+            (bool) $row['is_admin'],
+            (bool) $row['is_blocked'],
+            $row['last_login'],
             $row['created_at']
         );
     }
 
-    /**
-     * Create new user
-     */
     public function createUser(string $email, string $password, string $name, string $surname): bool
     {
         $passwordHash = password_hash($password, PASSWORD_ARGON2ID);
@@ -97,9 +90,6 @@ class UserRepository extends Repository
         return $stmt->execute();
     }
 
-    /**
-     * Update user profile
-     */
     public function updateUser(int $id, string $name, string $surname): bool
     {
         $stmt = $this->database->connect()->prepare('
@@ -115,9 +105,6 @@ class UserRepository extends Repository
         return $stmt->execute();
     }
 
-    /**
-     * Update user password
-     */
     public function updatePassword(int $id, string $newPassword): bool
     {
         $passwordHash = password_hash($newPassword, PASSWORD_ARGON2ID);
@@ -134,9 +121,6 @@ class UserRepository extends Repository
         return $stmt->execute();
     }
 
-    /**
-     * Check if email exists
-     */
     public function emailExists(string $email): bool
     {
         $stmt = $this->database->connect()->prepare('
@@ -146,5 +130,78 @@ class UserRepository extends Repository
         $stmt->execute();
         
         return $stmt->fetchColumn() > 0;
+    }
+
+    public function updateLastLogin(int $id): bool
+    {
+        $stmt = $this->database->connect()->prepare('
+            UPDATE users 
+            SET last_login = CURRENT_TIMESTAMP 
+            WHERE id = :id
+        ');
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function getAllUsers(): array
+    {
+        $stmt = $this->database->connect()->prepare('
+            SELECT id, email, name, surname, is_admin, is_blocked, last_login, created_at 
+            FROM users 
+            ORDER BY created_at DESC
+        ');
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function setUserBlocked(int $id, bool $blocked): bool
+    {
+        $stmt = $this->database->connect()->prepare('
+            UPDATE users 
+            SET is_blocked = :blocked 
+            WHERE id = :id
+        ');
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':blocked', $blocked, PDO::PARAM_BOOL);
+        return $stmt->execute();
+    }
+
+    public function deleteUser(int $id): bool
+    {
+        $stmt = $this->database->connect()->prepare('
+            DELETE FROM users WHERE id = :id
+        ');
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function createUserWithAdmin(string $email, string $password, string $name, string $surname, bool $isAdmin = false): bool
+    {
+        $passwordHash = password_hash($password, PASSWORD_ARGON2ID);
+        
+        $stmt = $this->database->connect()->prepare('
+            INSERT INTO users (email, password_hash, name, surname, is_admin) 
+            VALUES (:email, :password_hash, :name, :surname, :is_admin)
+        ');
+        
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->bindParam(':password_hash', $passwordHash, PDO::PARAM_STR);
+        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+        $stmt->bindParam(':surname', $surname, PDO::PARAM_STR);
+        $stmt->bindParam(':is_admin', $isAdmin, PDO::PARAM_BOOL);
+        
+        return $stmt->execute();
+    }
+
+    public function setUserAdmin(int $id, bool $isAdmin): bool
+    {
+        $stmt = $this->database->connect()->prepare('
+            UPDATE users 
+            SET is_admin = :is_admin 
+            WHERE id = :id
+        ');
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':is_admin', $isAdmin, PDO::PARAM_BOOL);
+        return $stmt->execute();
     }
 }

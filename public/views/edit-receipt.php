@@ -1,7 +1,4 @@
 <?php
-/** @var array $receipt */
-/** @var array $items */
-/** @var array $categories */
 $pageTitle = 'Edytuj paragon';
 $activePage = '';
 ?>

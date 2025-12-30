@@ -6,10 +6,6 @@ require_once __DIR__ . '/../repository/BudgetRepository.php';
 require_once __DIR__ . '/../repository/CategoryRepository.php';
 require_once __DIR__ . '/../services/OCRService.php';
 
-/**
- * API Controller for JS
- * Handles JSON API endpoints for AJAX request (json responses not rendered views)
- */
 class ApiController extends AppController
 {
     private ReceiptRepository $receiptRepository;
@@ -24,9 +20,6 @@ class ApiController extends AppController
         $this->categoryRepository = CategoryRepository::getInstance();
     }
 
-    /**
-     * Get monthly expenses
-     */
     public function monthlyExpenses(): void
     {
         $this->requireLogin();
@@ -46,9 +39,6 @@ class ApiController extends AppController
         ]);
     }
 
-    /**
-     * Get daily expenses for a date
-     */
     public function dailyExpenses(): void
     {
         $this->requireLogin();
@@ -73,9 +63,6 @@ class ApiController extends AppController
         ]);
     }
 
-    /**
-     * Get budget status
-     */
     public function budgetStatus(): void
     {
         $this->requireLogin();
@@ -92,9 +79,6 @@ class ApiController extends AppController
         ]);
     }
 
-    /**
-     * Get categories
-     */
     public function categories(): void
     {
         $this->requireLogin();
@@ -107,9 +91,6 @@ class ApiController extends AppController
         ]);
     }
 
-    /**
-     * Process OCR from uploaded receipt image
-     */
     public function ocrProcess(): void
     {
         $this->requireLogin();
@@ -126,7 +107,6 @@ class ApiController extends AppController
 
         $file = $_FILES['receipt_image'];
         
-        // Validate file type
         $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         $finfo = new finfo(FILEINFO_MIME_TYPE);
         $mimeType = $finfo->file($file['tmp_name']);
@@ -136,14 +116,12 @@ class ApiController extends AppController
             return;
         }
 
-        // Validate file size (max 10MB)
         if ($file['size'] > 10 * 1024 * 1024) {
             $this->json(['success' => false, 'error' => 'Plik jest za duży (max 10MB)'], 400);
             return;
         }
 
         try {
-            // Save file
             $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
             $filename = uniqid('receipt_', true) . '.' . $extension;
             $uploadDir = __DIR__ . '/../../public/uploads/';
@@ -155,7 +133,6 @@ class ApiController extends AppController
             $uploadPath = $uploadDir . $filename;
             move_uploaded_file($file['tmp_name'], $uploadPath);
 
-            // Process OCR
             $ocrService = new OCRService();
             $ocrResult = $ocrService->processReceipt($uploadPath);
 
@@ -171,9 +148,6 @@ class ApiController extends AppController
         }
     }
 
-    /**
-     * Save receipt from form
-     */
     public function saveReceipt(): void
     {
         $this->requireLogin();
@@ -193,7 +167,6 @@ class ApiController extends AppController
         $imagePath = $data['image_path'] ?? null;
         $items = $data['items'] ?? [];
 
-        // Validate
         if (empty($storeName)) {
             $this->json(['success' => false, 'error' => 'Podaj nazwę sklepu'], 400);
             return;
@@ -219,7 +192,6 @@ class ApiController extends AppController
                 }
             }
 
-            // Create receipt
             $receiptId = $this->receiptRepository->createReceipt(
                 $userId,
                 $storeName,
@@ -229,7 +201,6 @@ class ApiController extends AppController
                 $notes ?: null
             );
 
-            // Add items
             if (!empty($items)) {
                 foreach ($items as $item) {
                     if (!empty($item['name'])) {
@@ -256,9 +227,6 @@ class ApiController extends AppController
         }
     }
 
-    /**
-     * Get recent receipts
-     */
     public function recentReceipts(): void
     {
         $this->requireLogin();
@@ -273,9 +241,6 @@ class ApiController extends AppController
         ]);
     }
 
-    /**
-     * Get calendar data (expenses by day for a month)
-     */
     public function calendarData(): void
     {
         $this->requireLogin();

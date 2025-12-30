@@ -2,10 +2,6 @@
 
 require_once 'Repository.php';
 
-/**
- * Category Repository
- * Handles all database operations for categories
- */
 class CategoryRepository extends Repository
 {
     private static ?CategoryRepository $instance = null;
@@ -18,9 +14,6 @@ class CategoryRepository extends Repository
         return self::$instance;
     }
 
-    /**
-     * Get all categories for a user
-     */
     public function getCategoriesByUserId(int $userId): array
     {
         $stmt = $this->database->connect()->prepare('
@@ -35,9 +28,6 @@ class CategoryRepository extends Repository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get category by ID
-     */
     public function getCategoryById(int $id, int $userId): ?array
     {
         $stmt = $this->database->connect()->prepare('
@@ -53,9 +43,6 @@ class CategoryRepository extends Repository
         return $category ?: null;
     }
 
-    /**
-     * Create new category
-     */
     public function createCategory(int $userId, string $name, string $iconName = 'category', string $colorHex = '#6B7280'): bool
     {
         $stmt = $this->database->connect()->prepare('
@@ -71,9 +58,6 @@ class CategoryRepository extends Repository
         return $stmt->execute();
     }
 
-    /**
-     * Delete category
-     */
     public function deleteCategory(int $id, int $userId): bool
     {
         $stmt = $this->database->connect()->prepare('
@@ -86,9 +70,6 @@ class CategoryRepository extends Repository
         return $stmt->execute();
     }
 
-    /**
-     * Get default categories (template)
-     */
     public function getDefaultCategories(): array
     {
         $stmt = $this->database->connect()->prepare('
@@ -102,10 +83,6 @@ class CategoryRepository extends Repository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Clone default categories for new user
-     * (This is also handled by database trigger, but keeping as backup)
-     */
     public function cloneDefaultCategoriesForUser(int $userId): bool
     {
         $stmt = $this->database->connect()->prepare('
@@ -119,9 +96,6 @@ class CategoryRepository extends Repository
         return $stmt->execute();
     }
 
-    /**
-     * Get expenses by category for a specific month
-     */
     public function getExpensesByCategory(int $userId, int $month, int $year): array
     {
         $stmt = $this->database->connect()->prepare('

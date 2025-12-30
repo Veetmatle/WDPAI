@@ -1,9 +1,5 @@
 <?php
 
-/**
- * User Model
- * Represents a user entity
- */
 class User 
 {
     private int $id;
@@ -11,6 +7,9 @@ class User
     private string $passwordHash;
     private ?string $name;
     private ?string $surname;
+    private bool $isAdmin;
+    private bool $isBlocked;
+    private ?string $lastLogin;
     private ?string $createdAt;
 
     public function __construct(
@@ -19,6 +18,9 @@ class User
         string $passwordHash,
         ?string $name = null,
         ?string $surname = null,
+        bool $isAdmin = false,
+        bool $isBlocked = false,
+        ?string $lastLogin = null,
         ?string $createdAt = null
     ) {
         $this->id = $id;
@@ -26,6 +28,9 @@ class User
         $this->passwordHash = $passwordHash;
         $this->name = $name;
         $this->surname = $surname;
+        $this->isAdmin = $isAdmin;
+        $this->isBlocked = $isBlocked;
+        $this->lastLogin = $lastLogin;
         $this->createdAt = $createdAt;
     }
 
@@ -54,6 +59,21 @@ class User
         return trim(($this->name ?? '') . ' ' . ($this->surname ?? ''));
     }
 
+    public function isAdmin(): bool 
+    {
+        return $this->isAdmin;
+    }
+
+    public function isBlocked(): bool 
+    {
+        return $this->isBlocked;
+    }
+
+    public function getLastLogin(): ?string 
+    {
+        return $this->lastLogin;
+    }
+
     public function getCreatedAt(): ?string 
     {
         return $this->createdAt;
@@ -71,6 +91,9 @@ class User
             'email' => $this->email,
             'name' => $this->name,
             'surname' => $this->surname,
+            'is_admin' => $this->isAdmin,
+            'is_blocked' => $this->isBlocked,
+            'last_login' => $this->lastLogin,
             'created_at' => $this->createdAt
         ];
     }

@@ -4,10 +4,6 @@ require_once __DIR__ . '/AppController.php';
 require_once __DIR__ . '/../repository/ReceiptRepository.php';
 require_once __DIR__ . '/../repository/BudgetRepository.php';
 
-/**
- * Stats Controller
- * Handles statistics and chart
- */
 class StatsController extends AppController
 {
     private ReceiptRepository $receiptRepository;
@@ -20,19 +16,14 @@ class StatsController extends AppController
         $this->budgetRepository = BudgetRepository::getInstance();
     }
 
-    /**
-     * Display statistics page
-     */
     public function index(): void
     {
         $this->requireLogin();
         $userId = $this->getUserId();
 
-        // Pobierz miesiąc i rok z parametrów lub użyj bieżących
         $month = isset($_GET['month']) ? (int) $_GET['month'] : (int) date('n');
         $year = isset($_GET['year']) ? (int) $_GET['year'] : (int) date('Y');
 
-        // Walidacja
         if ($month < 1 || $month > 12) {
             $month = (int) date('n');
         }
@@ -40,25 +31,19 @@ class StatsController extends AppController
             $year = (int) date('Y');
         }
 
-        // Pobierz wydatki pogrupowane po kategoriach
         $categoryExpenses = $this->receiptRepository->getExpensesByCategory($userId, $month, $year);
 
-        // Oblicz sumę
         $totalExpenses = 0;
         foreach ($categoryExpenses as $cat) {
             $totalExpenses += (float) $cat['total'];
         }
 
-        // Pobierz budżet
         $budget = $this->budgetRepository->getBudget($userId, $month, $year);
 
-        // Pobierz podsumowanie ostatnich 6 miesięcy
         $monthlySummary = $this->receiptRepository->getExpensesSummary($userId, 6);
 
-        // Pobierz paragony z danego miesiąca (max 3)
         $monthlyReceipts = $this->receiptRepository->getReceiptsByMonth($userId, $month, $year, 3);
 
-        // Poprzedni i następny miesiąc
         $prevMonth = $month - 1;
         $prevYear = $year;
         if ($prevMonth < 1) {

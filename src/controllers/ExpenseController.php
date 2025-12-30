@@ -5,10 +5,6 @@ require_once __DIR__ . '/../repository/ReceiptRepository.php';
 require_once __DIR__ . '/../repository/CategoryRepository.php';
 require_once __DIR__ . '/../repository/BudgetRepository.php';
 
-/**
- * Expense Controller
- * Handles expense management: view daily expenses, add new expense
- */
 class ExpenseController extends AppController
 {
     private ReceiptRepository $receiptRepository;
@@ -23,27 +19,20 @@ class ExpenseController extends AppController
         $this->budgetRepository = BudgetRepository::getInstance();
     }
 
-    /**
-     * Display daily expenses
-     */
     public function daily(): void
     {
         $this->requireLogin();
         $userId = $this->getUserId();
         
-        // Get date from query params or use today
         $date = $_GET['date'] ?? date('Y-m-d');
         
-        // Validate date format
         if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
             $date = date('Y-m-d');
         }
 
-        // Get receipts for this date
         $receipts = $this->receiptRepository->getReceiptsByDate($userId, $date);
         $dailyTotal = $this->receiptRepository->getDailyTotal($userId, $date);
 
-        // Format date for display
         $timestamp = strtotime($date);
         $dayNames = ['Niedziela', 'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota'];
         $monthNames = [
@@ -65,32 +54,24 @@ class ExpenseController extends AppController
         ]);
     }
 
-    /**
-     * Add new expense form
-     */
     public function add(): void
     {
         $this->requireLogin();
         $userId = $this->getUserId();
         
-        // Get date from query params or use today
         $date = $_GET['date'] ?? date('Y-m-d');
         
-        // Validate date format
         if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
             $date = date('Y-m-d');
         }
 
-        // Handle form submission
         if ($this->isPost()) {
             $this->handleAddExpenseForm($userId);
             return;
         }
 
-        // Get categories for the form
         $categories = $this->categoryRepository->getCategoriesByUserId($userId);
 
-        // Get budget status for current month
         $currentMonth = (int) date('n');
         $currentYear = (int) date('Y');
         $monthlyTotal = $this->receiptRepository->getMonthlyTotal($userId, $currentMonth, $currentYear);
@@ -103,12 +84,8 @@ class ExpenseController extends AppController
         ]);
     }
 
-    /**
-     * Handle expense form submission (non-API - redirect)
-     */
     private function handleAddExpenseForm(int $userId): void
     {
-        // Validate CSRF
         if (!$this->validateCsrf()) {
             $_SESSION['error'] = 'Nieprawidłowe żądanie (CSRF)';
             header('Location: /add-expense');
@@ -121,7 +98,6 @@ class ExpenseController extends AppController
         $notes = $this->sanitize($_POST['notes'] ?? '');
         $items = $_POST['items'] ?? [];
 
-        // Validate required fields
         if (empty($storeName)) {
             $_SESSION['error'] = 'Podaj nazwę sklepu';
             header('Location: /add-expense');
@@ -134,7 +110,6 @@ class ExpenseController extends AppController
             exit;
         }
 
-        // Validate date
         if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
             $_SESSION['error'] = 'Nieprawidłowy format daty';
             header('Location: /add-expense');
@@ -142,13 +117,11 @@ class ExpenseController extends AppController
         }
 
         try {
-            // Handle file upload if present
             $imagePath = null;
             if (isset($_FILES['receipt_image']) && $_FILES['receipt_image']['error'] === UPLOAD_ERR_OK) {
                 $imagePath = $this->handleFileUpload($_FILES['receipt_image']);
             }
 
-            // Calculate total from items if items provided
             if (!empty($items) && is_array($items)) {
                 $calculatedTotal = 0;
                 foreach ($items as $item) {
@@ -163,7 +136,6 @@ class ExpenseController extends AppController
                 }
             }
 
-            // Create receipt
             $receiptId = $this->receiptRepository->createReceipt(
                 $userId,
                 $storeName,
@@ -173,7 +145,6 @@ class ExpenseController extends AppController
                 $notes ?: null
             );
 
-            // Add items if provided
             if (!empty($items) && is_array($items)) {
                 foreach ($items as $item) {
                     if (!empty($item['name']) && isset($item['price'])) {
@@ -199,9 +170,6 @@ class ExpenseController extends AppController
         }
     }
 
-    /**
-     * Handle expense form submission (API endpoint)
-     */
     public function addApi(): void
     {
         $this->requireLogin();
@@ -209,25 +177,19 @@ class ExpenseController extends AppController
         $this->handleAddExpense($userId);
     }
 
-    /**
-     * Handle expense form submission
-     */
     private function handleAddExpense(int $userId): void
     {
-        // Validate CSRF
         if (!$this->validateCsrf()) {
             $this->json(['success' => false, 'error' => 'Nieprawidłowe żądanie'], 400);
             return;
         }
 
         $storeName = $this->sanitize($_POST['store_name'] ?? '');
-        // Obsługa obu nazw pola daty
         $date = $_POST['receipt_date'] ?? $_POST['date'] ?? date('Y-m-d');
         $totalAmount = (float) ($_POST['total_amount'] ?? 0);
         $notes = $this->sanitize($_POST['notes'] ?? '');
         $items = $_POST['items'] ?? [];
 
-        // Validate required fields
         if (empty($storeName)) {
             $this->json(['success' => false, 'error' => 'Podaj nazwę sklepu'], 400);
             return;
@@ -238,26 +200,22 @@ class ExpenseController extends AppController
             return;
         }
 
-        // Validate date
         if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
             $this->json(['success' => false, 'error' => 'Nieprawidłowy format daty'], 400);
             return;
         }
 
-        // Limit input lengths
         if (strlen($storeName) > 255 || strlen($notes) > 1000) {
             $this->json(['success' => false, 'error' => 'Dane wejściowe są za długie'], 400);
             return;
         }
 
         try {
-            // Handle file upload if present
             $imagePath = null;
             if (isset($_FILES['receipt_image']) && $_FILES['receipt_image']['error'] === UPLOAD_ERR_OK) {
                 $imagePath = $this->handleFileUpload($_FILES['receipt_image']);
             }
 
-            // Calculate total from items if items provided and total is 0
             if (!empty($items) && is_array($items)) {
                 $calculatedTotal = 0;
                 foreach ($items as $item) {
@@ -272,7 +230,6 @@ class ExpenseController extends AppController
                 }
             }
 
-            // Create receipt
             $receiptId = $this->receiptRepository->createReceipt(
                 $userId,
                 $storeName,
@@ -282,7 +239,6 @@ class ExpenseController extends AppController
                 $notes ?: null
             );
 
-            // Add items if provided
             if (!empty($items) && is_array($items)) {
                 foreach ($items as $item) {
                     if (!empty($item['name']) && isset($item['price'])) {
@@ -304,15 +260,11 @@ class ExpenseController extends AppController
         }
     }
 
-    /**
-     * Handle file upload
-     */
     private function handleFileUpload(array $file): ?string
     {
         $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        $maxSize = 10 * 1024 * 1024; // 10MB
+        $maxSize = 10 * 1024 * 1024;
 
-        // Validate file type
         $finfo = new finfo(FILEINFO_MIME_TYPE);
         $mimeType = $finfo->file($file['tmp_name']);
         
@@ -320,23 +272,19 @@ class ExpenseController extends AppController
             throw new Exception('Nieprawidłowy typ pliku');
         }
 
-        // Validate file size
         if ($file['size'] > $maxSize) {
             throw new Exception('Plik jest za duży (max 10MB)');
         }
 
-        // Generate unique filename
         $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
         $filename = uniqid('receipt_', true) . '.' . $extension;
         $uploadDir = __DIR__ . '/../../public/uploads/';
         $uploadPath = $uploadDir . $filename;
 
-        // Create directory if not exists
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
 
-        // Move uploaded file
         if (!move_uploaded_file($file['tmp_name'], $uploadPath)) {
             throw new Exception('Nie można zapisać pliku');
         }
@@ -344,15 +292,11 @@ class ExpenseController extends AppController
         return '/uploads/' . $filename;
     }
 
-    /**
-     * Display all expenses (optionally filtered by month)
-     */
     public function all(): void
     {
         $this->requireLogin();
         $userId = $this->getUserId();
 
-        // Sprawdź czy filtrujemy po miesiącu
         $month = isset($_GET['month']) ? (int)$_GET['month'] : null;
         $year = isset($_GET['year']) ? (int)$_GET['year'] : null;
         
@@ -367,17 +311,14 @@ class ExpenseController extends AppController
         $filterYear = null;
         
         if ($month && $year && $month >= 1 && $month <= 12 && $year >= 2000) {
-            // Pobierz paragony z danego miesiąca
             $receipts = $this->receiptRepository->getReceiptsByMonth($userId, $month, $year, 100);
             $pageTitle = 'Wydatki: ' . $monthNames[$month] . ' ' . $year;
             $filterMonth = $month;
             $filterYear = $year;
         } else {
-            // Pobierz wszystkie paragony
             $receipts = $this->receiptRepository->getReceiptsByUserId($userId, 100);
         }
 
-        // Grupuj po dacie
         $groupedReceipts = [];
         foreach ($receipts as $receipt) {
             $date = $receipt['receipt_date'];

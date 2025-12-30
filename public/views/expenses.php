@@ -1,9 +1,4 @@
 <?php
-/** @var array $groupedReceipts */
-/** @var string $pageTitle */
-/** @var int|null $filterMonth */
-/** @var int|null $filterYear */
-
 $activePage = 'expenses';
 
 $monthNames = [
@@ -13,7 +8,6 @@ $monthNames = [
 ];
 $dayNames = ['Niedziela', 'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota'];
 
-// Ustaw domyślny tytuł jeśli nie przekazano
 $pageTitle = $pageTitle ?? 'Wszystkie wydatki';
 $backUrl = ($filterMonth && $filterYear) ? "/stats?month={$filterMonth}&year={$filterYear}" : '/dashboard';
 ?>

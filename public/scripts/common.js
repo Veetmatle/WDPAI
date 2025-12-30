@@ -1,5 +1,4 @@
 
-// Bierze to co ktoś podał, wrzuca w diva, zwraca bezpieczne, żeby skryptu ktoś nie wstrzyknął
 function escapeHtml(text) {
     if (text === null || text === undefined) return '';
     const div = document.createElement('div');
@@ -7,7 +6,6 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Format waluty
 function formatCurrency(amount, currency = 'PLN') {
     return new Intl.NumberFormat('pl-PL', {
         style: 'currency',
@@ -15,7 +13,6 @@ function formatCurrency(amount, currency = 'PLN') {
     }).format(amount);
 }
 
-// Format daty
 function formatDate(dateString, options = {}) {
     const defaults = {
         year: 'numeric',
@@ -25,7 +22,6 @@ function formatDate(dateString, options = {}) {
     return new Date(dateString).toLocaleDateString('pl-PL', { ...defaults, ...options });
 }
 
-// Pommocnik do fetch API, zawsze json, obsługuje błędy
 async function apiRequest(url, options = {}) {
     const defaults = {
         headers: {
@@ -42,7 +38,6 @@ async function apiRequest(url, options = {}) {
     return response.json();
 }
 
-// Powiadomienie na górze czy np. coś się udało
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
@@ -60,18 +55,15 @@ function showNotification(message, type = 'info') {
     }, 3000);
 }
 
-// Walidacja emaila
 function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
 }
 
-// Walidacja hasła
 function validatePassword(password) {
     return password.length >= 8;
 }
 
-// Powstrzymuje funckję przed zbyt częstym wywoływaniem, np. przy wpisywaniu w input login
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -84,7 +76,6 @@ function debounce(func, wait) {
     };
 }
 
-// Podgląd wpisywanego hasła
 function togglePasswordVisibility(inputId, toggleBtn) {
     const input = document.getElementById(inputId);
     if (!input) return;
@@ -100,7 +91,6 @@ function togglePasswordVisibility(inputId, toggleBtn) {
     }
 }
 
-// Sprawdzanie siły hasła
 function checkPasswordStrength(password) {
     let strength = 0;
     
@@ -117,9 +107,7 @@ function checkPasswordStrength(password) {
     };
 }
 
-// Ładny efekt fali na przyciskach
 function initRippleEffect() {
-    // Szuka wszystkich przycisków i na każdym montuje nasłuchiwanie kliknięcia
     document.querySelectorAll('.btn, button').forEach(button => {
         button.addEventListener('click', function(e) {
             const ripple = document.createElement('span');
@@ -128,7 +116,6 @@ function initRippleEffect() {
             const x = e.clientX - rect.left - size / 2;
             const y = e.clientY - rect.top - size / 2;
             
-            // Stylizacja efektu
             ripple.style.cssText = `
                 position: absolute;
                 width: ${size}px;

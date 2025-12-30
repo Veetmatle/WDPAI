@@ -1,11 +1,9 @@
 
-// Dodaj listebnery po załadowaniu strony
 document.addEventListener('DOMContentLoaded', function() {
     initLoginForm();
     initPasswordToggle();
 });
 
-// Inicjalizacja formularza logowania
 function initLoginForm() {
     const form = document.querySelector('.login-form');
     if (!form) return;
@@ -15,7 +13,6 @@ function initLoginForm() {
     const submitBtn = form.querySelector('button[type="submit"]');
     
     if (emailInput) {
-        // blur - walidacja po opuszczeniu pola
         emailInput.addEventListener('blur', function() {
             validateEmailField(this);
         });

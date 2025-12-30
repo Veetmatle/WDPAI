@@ -4,10 +4,6 @@ require_once __DIR__ . '/AppController.php';
 require_once __DIR__ . '/../repository/ReceiptRepository.php';
 require_once __DIR__ . '/../repository/CategoryRepository.php';
 
-/**
- * Receipt Controller
- * Handles receipt detail view
- */
 class ReceiptController extends AppController
 {
     private ReceiptRepository $receiptRepository;
@@ -20,9 +16,6 @@ class ReceiptController extends AppController
         $this->categoryRepository = CategoryRepository::getInstance();
     }
 
-    /**
-     * Show receipt details
-     */
     public function show(): void
     {
         $this->requireLogin();
@@ -43,7 +36,6 @@ class ReceiptController extends AppController
             exit;
         }
 
-        // Pobierz produkty z paragonu
         $items = $this->receiptRepository->getReceiptItems($receiptId);
 
         $this->render('receipt-details', [
@@ -53,9 +45,6 @@ class ReceiptController extends AppController
         ]);
     }
 
-    /**
-     * Delete receipt
-     */
     public function delete(): void
     {
         $this->requireLogin();
@@ -66,7 +55,6 @@ class ReceiptController extends AppController
             $csrfToken = $_POST['csrf_token'] ?? '';
             $returnUrl = $_POST['return_url'] ?? '/dashboard';
 
-            // Sanitize return URL
             $returnUrl = $this->sanitizeReturnUrl($returnUrl);
 
             if (!$this->validateCSRF($csrfToken)) {
@@ -81,7 +69,6 @@ class ReceiptController extends AppController
                 exit;
             }
 
-            // Pobierz paragon przed usunięciem
             $receipt = $this->receiptRepository->getReceiptById($receiptId, $userId);
 
             if (!$receipt) {
@@ -91,7 +78,6 @@ class ReceiptController extends AppController
             }
 
             try {
-                // Usuń plik obrazka jeśli istnieje
                 if (!empty($receipt['receipt_image_path'])) {
                     $imagePath = __DIR__ . '/../../public' . $receipt['receipt_image_path'];
                     if (file_exists($imagePath)) {
@@ -99,7 +85,6 @@ class ReceiptController extends AppController
                     }
                 }
 
-                // Usuń paragon z bazy
                 $deleted = $this->receiptRepository->deleteReceipt($receiptId, $userId);
 
                 if ($deleted) {
@@ -116,26 +101,18 @@ class ReceiptController extends AppController
             exit;
         }
 
-        // Dla GET - przekieruj na dashboard
         header('Location: /dashboard');
         exit;
     }
 
-    /**
-     * Sanitize return URL to prevent open redirect
-     */
     private function sanitizeReturnUrl(string $url): string
     {
-        // Only allow relative URLs starting with /
         if (preg_match('#^/[a-zA-Z0-9\-_/]*(\?[a-zA-Z0-9\-_=&]*)?$#', $url)) {
             return $url;
         }
         return '/dashboard';
     }
 
-    /**
-     * Edit receipt
-     */
     public function edit(): void
     {
         $this->requireLogin();
@@ -167,9 +144,6 @@ class ReceiptController extends AppController
         ]);
     }
 
-    /**
-     * Update receipt (API endpoint)
-     */
     public function updateApi(): void
     {
         $this->requireLogin();
@@ -197,7 +171,6 @@ class ReceiptController extends AppController
             return;
         }
 
-        // Sprawdź czy paragon należy do użytkownika
         $receipt = $this->receiptRepository->getReceiptById($receiptId, $userId);
         if (!$receipt) {
             $this->json(['success' => false, 'error' => 'Paragon nie został znaleziony'], 404);
@@ -215,7 +188,6 @@ class ReceiptController extends AppController
         }
 
         try {
-            // Oblicz sumę z produktów
             if (!empty($items) && is_array($items)) {
                 $calculatedTotal = 0;
                 foreach ($items as $item) {
@@ -230,10 +202,8 @@ class ReceiptController extends AppController
                 }
             }
 
-            // Aktualizuj paragon
             $this->receiptRepository->updateReceipt($receiptId, $userId, $storeName, $date, $totalAmount, $notes ?: null);
 
-            // Usuń stare produkty i dodaj nowe
             $this->receiptRepository->deleteReceiptItems($receiptId);
 
             if (!empty($items) && is_array($items)) {

@@ -27,7 +27,6 @@ class DashboardController extends AppController
         $currentMonth = (int)date('n');
         $currentYear = (int)date('Y');
 
-        // Pobierz dane użytkownika - konwertuj obiekt (json) na tablicę
         $userObj = $this->userRepository->getUserById($userId);
         $user = $userObj ? $userObj->toArray() : [
             'name' => $_SESSION['user_name'] ?? 'Użytkownik',
@@ -35,16 +34,12 @@ class DashboardController extends AppController
             'email' => $_SESSION['user_email'] ?? ''
         ];
 
-        // Suma wydatków w bieżącym miesiącu
         $monthlyTotal = $this->receiptRepository->getMonthlyTotal($userId, $currentMonth, $currentYear);
 
-        // Budżet na bieżący miesiąc
         $budget = $this->budgetRepository->getBudget($userId, $currentMonth, $currentYear);
 
-        // Ostatnie transakcje (max 3)
         $recentReceipts = $this->receiptRepository->getRecentReceipts($userId, 3);
 
-        // Podsumowanie wydatków z ostatnich 4 miesięcy
         $expensesSummary = $this->receiptRepository->getExpensesSummary($userId, 4);
 
         $this->render('dashboard', [

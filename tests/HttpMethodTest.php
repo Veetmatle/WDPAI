@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Proste testy jednostkowe dla atrybutu HttpMethod i walidatora
- *  docker compose exec php php tests/HttpMethodTest.php
- */
-
 require_once __DIR__ . '/../src/attributes/HttpMethod.php';
 require_once __DIR__ . '/../src/attributes/AttributeValidator.php';
 
@@ -61,9 +56,6 @@ class SimpleTestRunner
     }
 }
 
-/**
- * Przykładowy kontroler testowy z atrybutami HttpMethod
- */
 class TestController
 {
     #[HttpMethod(['GET'])]
@@ -88,9 +80,6 @@ echo "============================================\n\n";
 
 $runner = new SimpleTestRunner();
 
-// -------------------------------------------
-// TEST 1: Sprawdzenie czy atrybut poprawnie przechowuje metody HTTP
-// -------------------------------------------
 echo "--- TEST 1: Konstruktor i getMethods() ---\n";
 
 $httpMethod = new HttpMethod(['GET', 'POST']);
@@ -100,14 +89,10 @@ $runner->assertEquals(2, count($methods), "Atrybut powinien przechowywać 2 meto
 $runner->assertTrue(in_array('GET', $methods), "Atrybut powinien zawierać metodę GET");
 $runner->assertTrue(in_array('POST', $methods), "Atrybut powinien zawierać metodę POST");
 
-// Test normalizacji wielkości liter
 $httpMethodLower = new HttpMethod(['get', 'post']);
 $methodsNormalized = $httpMethodLower->getMethods();
 $runner->assertTrue(in_array('GET', $methodsNormalized), "Metody powinny być znormalizowane do wielkich liter (get -> GET)");
 
-// -------------------------------------------
-// TEST 2: Metoda isMethodAllowed()
-// -------------------------------------------
 echo "\n--- TEST 2: isMethodAllowed() ---\n";
 
 $httpMethod = new HttpMethod(['GET', 'POST']);
@@ -118,36 +103,26 @@ $runner->assertTrue($httpMethod->isMethodAllowed('get'), "Metoda 'get' (małe li
 $runner->assertFalse($httpMethod->isMethodAllowed('PUT'), "Metoda PUT nie powinna być dozwolona");
 $runner->assertFalse($httpMethod->isMethodAllowed('DELETE'), "Metoda DELETE nie powinna być dozwolona");
 
-// -------------------------------------------
-// TEST 3: AttributeValidator - walidacja metod HTTP z refleksji
-// -------------------------------------------
 echo "\n--- TEST 3: AttributeValidator::validateHttpMethod() ---\n";
 
-// Test kontrolera z atrybutem GET
 $resultGet = AttributeValidator::validateHttpMethod('TestController', 'getOnly', 'GET');
 $runner->assertTrue($resultGet['allowed'], "GET powinien być dozwolony dla metody getOnly()");
 
 $resultGetFail = AttributeValidator::validateHttpMethod('TestController', 'getOnly', 'POST');
 $runner->assertFalse($resultGetFail['allowed'], "POST nie powinien być dozwolony dla metody getOnly()");
 
-// Test kontrolera z atrybutem POST
 $resultPost = AttributeValidator::validateHttpMethod('TestController', 'postOnly', 'POST');
 $runner->assertTrue($resultPost['allowed'], "POST powinien być dozwolony dla metody postOnly()");
 
-// Test kontrolera z wieloma metodami
 $resultMulti = AttributeValidator::validateHttpMethod('TestController', 'getAndPost', 'GET');
 $runner->assertTrue($resultMulti['allowed'], "GET powinien być dozwolony dla metody getAndPost()");
 
 $resultMultiPost = AttributeValidator::validateHttpMethod('TestController', 'getAndPost', 'POST');
 $runner->assertTrue($resultMultiPost['allowed'], "POST powinien być dozwolony dla metody getAndPost()");
 
-// Test kontrolera bez atrybutu - powinien pozwalać na wszystko
 $resultNoAttr = AttributeValidator::validateHttpMethod('TestController', 'noAttribute', 'DELETE');
 $runner->assertTrue($resultNoAttr['allowed'], "DELETE powinien być dozwolony dla metody bez atrybutu");
 
-// -------------------------------------------
-// Dodatkowe testy
-// -------------------------------------------
 echo "\n--- TEST 4: Sprawdzenie getAllowedMethodsString() ---\n";
 
 $httpMethod = new HttpMethod(['GET', 'POST', 'PUT']);
@@ -162,5 +137,4 @@ $runner->assertTrue($hasAttr, "Metoda getOnly() powinna mieć atrybut HttpMethod
 $noAttr = AttributeValidator::hasHttpMethodAttribute('TestController', 'noAttribute');
 $runner->assertFalse($noAttr, "Metoda noAttribute() nie powinna mieć atrybutu HttpMethod");
 
-// Podsumowanie
 $runner->printSummary();

@@ -2,10 +2,6 @@
 
 require_once 'Repository.php';
 
-/**
- * Budget Repository
- * Handles all database operations for budgets
- */
 class BudgetRepository extends Repository
 {
     private static ?BudgetRepository $instance = null;
@@ -18,9 +14,6 @@ class BudgetRepository extends Repository
         return self::$instance;
     }
 
-    /**
-     * Get budget for specific month and year
-     */
     public function getBudget(int $userId, int $month, int $year): ?array
     {
         $stmt = $this->database->connect()->prepare('
@@ -37,9 +30,6 @@ class BudgetRepository extends Repository
         return $budget ?: null;
     }
 
-    /**
-     * Get current month budget
-     */
     public function getCurrentBudget(int $userId): ?array
     {
         $month = (int) date('n');
@@ -47,9 +37,6 @@ class BudgetRepository extends Repository
         return $this->getBudget($userId, $month, $year);
     }
 
-    /**
-     * Set or update budget for a month
-     */
     public function setBudget(int $userId, int $month, int $year, float $amountLimit): bool
     {
         $stmt = $this->database->connect()->prepare('
@@ -68,9 +55,6 @@ class BudgetRepository extends Repository
         return $stmt->execute();
     }
 
-    /**
-     * Get all budgets for a user
-     */
     public function getAllBudgets(int $userId): array
     {
         $stmt = $this->database->connect()->prepare('
@@ -85,9 +69,6 @@ class BudgetRepository extends Repository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Delete budget
-     */
     public function deleteBudget(int $id, int $userId): bool
     {
         $stmt = $this->database->connect()->prepare('
@@ -100,9 +81,6 @@ class BudgetRepository extends Repository
         return $stmt->execute();
     }
 
-    /**
-     * Get budget status (remaining amount)
-     */
     public function getBudgetStatus(int $userId, int $month, int $year, float $currentExpenses): array
     {
         $budget = $this->getBudget($userId, $month, $year);

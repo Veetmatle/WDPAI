@@ -4,10 +4,6 @@ require_once 'Repository.php';
 require_once __DIR__ . '/../model/Receipt.php';
 require_once __DIR__ . '/../model/ReceiptItem.php';
 
-/**
- * Receipt Repository
- * Handles all database operations for receipts and receipt items
- */
 class ReceiptRepository extends Repository
 {
     private static ?ReceiptRepository $instance = null;
@@ -20,9 +16,6 @@ class ReceiptRepository extends Repository
         return self::$instance;
     }
 
-    /**
-     * Get all receipts for a user
-     */
     public function getReceiptsByUserId(int $userId, int $limit = 100): array
     {
         $stmt = $this->database->connect()->prepare('
@@ -39,9 +32,6 @@ class ReceiptRepository extends Repository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get recent receipts for dashboard
-     */
     public function getRecentReceipts(int $userId, int $limit = 5): array
     {
         $stmt = $this->database->connect()->prepare('
@@ -64,9 +54,6 @@ class ReceiptRepository extends Repository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get receipts for a specific month
-     */
     public function getReceiptsByMonth(int $userId, int $month, int $year, int $limit = 5): array
     {
         $stmt = $this->database->connect()->prepare('
@@ -93,9 +80,6 @@ class ReceiptRepository extends Repository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get receipt by ID
-     */
     public function getReceiptById(int $id, int $userId): ?array
     {
         $stmt = $this->database->connect()->prepare('
@@ -111,9 +95,6 @@ class ReceiptRepository extends Repository
         return $receipt ?: null;
     }
 
-    /**
-     * Get receipts for a specific date
-     */
     public function getReceiptsByDate(int $userId, string $date): array
     {
         $stmt = $this->database->connect()->prepare('
@@ -135,9 +116,6 @@ class ReceiptRepository extends Repository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get total expenses for a specific date
-     */
     public function getDailyTotal(int $userId, string $date): float
     {
         $stmt = $this->database->connect()->prepare('
@@ -152,9 +130,6 @@ class ReceiptRepository extends Repository
         return (float) $stmt->fetchColumn();
     }
 
-    /**
-     * Get expenses grouped by date for a month (for calendar)
-     */
     public function getMonthlyExpensesByDay(int $userId, int $month, int $year): array
     {
         $stmt = $this->database->connect()->prepare('
@@ -178,9 +153,6 @@ class ReceiptRepository extends Repository
         return $result;
     }
 
-    /**
-     * Get total expenses for current month
-     */
     public function getMonthlyTotal(int $userId, int $month, int $year): float
     {
         $stmt = $this->database->connect()->prepare('
@@ -198,12 +170,8 @@ class ReceiptRepository extends Repository
         return (float) $stmt->fetchColumn();
     }
 
-    /**
-     * Get expenses summary for last N months (for dashboard chart)
-     */
     public function getExpensesSummary(int $userId, int $months = 4): array
     {
-        // Budujemy zapytanie dla każdego z ostatnich N miesięcy
         $results = [];
         $conn = $this->database->connect();
         
@@ -235,9 +203,6 @@ class ReceiptRepository extends Repository
         return $results;
     }
 
-    /**
-     * Create new receipt
-     */
     public function createReceipt(int $userId, string $storeName, string $date, float $totalAmount, ?string $imagePath = null, ?string $notes = null): int
     {
         $conn = $this->database->connect();
@@ -259,9 +224,6 @@ class ReceiptRepository extends Repository
         return (int) $stmt->fetchColumn();
     }
 
-    /**
-     * Delete receipt and its items
-     */
     public function deleteReceipt(int $id, int $userId): bool
     {
         $conn = $this->database->connect();
@@ -269,7 +231,6 @@ class ReceiptRepository extends Repository
         try {
             $conn->beginTransaction();
             
-            // Najpierw usuń powiązane produkty
             $stmtItems = $conn->prepare('
                 DELETE FROM receipt_items 
                 WHERE receipt_id = :receipt_id
@@ -277,7 +238,6 @@ class ReceiptRepository extends Repository
             $stmtItems->bindParam(':receipt_id', $id, PDO::PARAM_INT);
             $stmtItems->execute();
             
-            // Następnie usuń paragon
             $stmtReceipt = $conn->prepare('
                 DELETE FROM receipts 
                 WHERE id = :id AND user_id = :user_id
@@ -298,9 +258,6 @@ class ReceiptRepository extends Repository
         }
     }
 
-    /**
-     * Get receipt items
-     */
     public function getReceiptItems(int $receiptId): array
     {
         $stmt = $this->database->connect()->prepare('
@@ -317,9 +274,6 @@ class ReceiptRepository extends Repository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Add receipt item
-     */
     public function addReceiptItem(int $receiptId, string $productName, float $price, ?int $categoryId = null, int $quantity = 1): bool
     {
         $stmt = $this->database->connect()->prepare('
@@ -342,9 +296,6 @@ class ReceiptRepository extends Repository
         return $stmt->execute();
     }
 
-    /**
-     * Update receipt total amount based on items
-     */
     public function updateReceiptTotal(int $receiptId): bool
     {
         $stmt = $this->database->connect()->prepare('
@@ -363,9 +314,6 @@ class ReceiptRepository extends Repository
         return $stmt->execute();
     }
 
-    /**
-     * Update receipt
-     */
     public function updateReceipt(int $receiptId, int $userId, string $storeName, string $date, float $totalAmount, ?string $notes = null): bool
     {
         $stmt = $this->database->connect()->prepare('
@@ -384,9 +332,6 @@ class ReceiptRepository extends Repository
         return $stmt->execute() && $stmt->rowCount() > 0;
     }
 
-    /**
-     * Delete all items for a receipt
-     */
     public function deleteReceiptItems(int $receiptId): bool
     {
         $stmt = $this->database->connect()->prepare('
@@ -396,9 +341,6 @@ class ReceiptRepository extends Repository
         return $stmt->execute();
     }
 
-    /**
-     * Get expenses grouped by category for a specific month
-     */
     public function getExpensesByCategory(int $userId, int $month, int $year): array
     {
         $stmt = $this->database->connect()->prepare('
@@ -429,9 +371,6 @@ class ReceiptRepository extends Repository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get expenses grouped by category for last N months (for comparison)
-     */
     public function getMonthlyExpensesByCategory(int $userId, int $months = 6): array
     {
         $results = [];

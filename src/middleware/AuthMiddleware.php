@@ -1,30 +1,17 @@
 <?php
 
-/**
- * Authentication Middleware
- * Handles user authentication checks and session management
- */
 class AuthMiddleware
 {
-    /**
-     * Check if user is authenticated
-     */
     public static function isAuthenticated(): bool
     {
         return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
     }
 
-    /**
-     * Get current user ID
-     */
     public static function getUserId(): ?int
     {
         return $_SESSION['user_id'] ?? null;
     }
 
-    /**
-     * Get current user data
-     */
     public static function getUser(): ?array
     {
         if (!self::isAuthenticated()) {
@@ -39,24 +26,23 @@ class AuthMiddleware
         ];
     }
 
-    /**
-     * Set user session after successful login
-     */
     public static function login(array $userData): void
     {
-        // Regenerate session ID to prevent session fixation
         session_regenerate_id(true);
 
         $_SESSION['user_id'] = $userData['id'];
         $_SESSION['user_email'] = $userData['email'];
         $_SESSION['user_name'] = $userData['name'];
         $_SESSION['user_surname'] = $userData['surname'];
+        $_SESSION['is_admin'] = $userData['is_admin'] ?? false;
         $_SESSION['login_time'] = time();
     }
 
-    /**
-     * Clear user session on logout
-     */
+    public static function isAdmin(): bool
+    {
+        return isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
+    }
+
     public static function logout(): void
     {
         $_SESSION = [];
@@ -77,9 +63,6 @@ class AuthMiddleware
         session_destroy();
     }
 
-    /**
-     * Generate CSRF token
-     */
     public static function generateCsrfToken(): string
     {
         if (empty($_SESSION['csrf_token'])) {
@@ -88,9 +71,6 @@ class AuthMiddleware
         return $_SESSION['csrf_token'];
     }
 
-    /**
-     * Validate CSRF toke
-     */
     public static function validateCsrfToken(?string $token): bool
     {
         if (empty($token) || empty($_SESSION['csrf_token'])) {
