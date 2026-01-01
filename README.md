@@ -12,6 +12,9 @@ Główne funkcjonalności:
 - Statystyki wydatków z podziałem na kategorie i miesiące (+ filtrowane paragony)
 - Ustawianie i śledzenie budżetu miesięcznego
 - Edycja i usuwanie paragonów (w ramach tranzakcji - elementy + paragon lub nic)
+- Zarządzanie rolami przez administratora (user, user premium, user blocked, admin)
+- Do każdej roli są przypisane konkretne uprawnienia, ktróre można zmienić w bazie danych
+- Obecnie user premium to user, któy może wszystko. User zwykły nie ma dostępu do edycji paragonów.
 
 ## Stack:
 
@@ -65,7 +68,13 @@ http://localhost:5050
 
 Dane testowego użytkownika (automat przy budowaniu kontenerów):
 - Email: test@example.com
-- Hasło: test123
+- Hasło: admin123
+
+Dane admina:
+- Email: admin@example.com
+- Hasło: admin123
+
+Powyższe hasła nie mają wymogu znaków specjalnych (itd.) ponieważ są tworzone z poziomu kodu przy budowaniu kontenerów i bazy.
 
 ## Struktura projektu
 
@@ -83,12 +92,14 @@ WDPAI/
 ├── public/                          
 │   ├── scripts/                    # Skrypty JavaScript
 │   │   ├── add-expense.js          # Obsługa dodawania wydatków
+|   |   |-- admin.js                # Obsługa admina (fetch api)
 │   │   ├── common.js               # Wspólne funkcje JS
 │   │   ├── edit-receipt.js         # Edycja paragonów
 │   │   ├── login.js                # Walidacja logowania
 │   │   ├── register.js             # Walidacja rejestracji
 │   │   └── settings.js             # Obsługa ustawień
-│   ├── styles/                     
+│   ├── styles/
+|   |   |-- admin.css               # Style dla admina               
 │   │   ├── common.css              # Style wspólne
 │   │   ├── dashboard.css           # Styl dashboardu
 │   │   ├── calendar.css            # Styl kalendarza
@@ -112,7 +123,7 @@ WDPAI/
 │   │   ├── AttributeValidator.php  # Walidator atrybutów PHP 8
 │   │   └── HttpMethod.php          # Atrybut metod HTTP
 │   ├── controllers/
-|   |   |-- AdminController.php     # Controller admina
+|   |   |-- AdminController.php     # Controller admin
 │   │   ├── AppController.php       # Bazowy kontroler
 │   │   ├── SecurityController.php  # Logowanie/rejestracja
 │   │   ├── DashboardController.php # Dashboard
@@ -130,6 +141,7 @@ WDPAI/
 │   │   └── ReceiptItem.php         # Model pozycji paragonu
 │   ├── repository/
 │   │   ├── Repository.php          # Bazowe repozytorium
+|   |   |-- RoleRepository.php      # Operacje na rolach -> uprawnienia
 │   │   ├── UserRepository.php      # Operacje na użytkownikach
 │   │   ├── ReceiptRepository.php   # Operacje na paragonach
 │   │   ├── CategoryRepository.php  # Operacje na kategoriach
@@ -181,11 +193,13 @@ Przykładowy flow dodawania wydatku:
 
 ### Schemat bazy danych (relacje tabel)
 
-- users 1:N receipts (user ma wiele paragonów)
-- users 1:N budgets (user ma wiele budżetów)
-- users 1:N categories (user ma wiele kategorii do wyboru na paragonach)
-- receipts 1:N receipt_items (paragon ma wiele pozycji)
-- categories 1:N receipt_items (kategoria ma wiele pozycji)
+- users 1:N receipts (użytkownik ma wiele paragonów)
+- users 1:N budgets (użytkownik ma wiele budżetów miesięcznych)
+- users 1:N categories (użytkownik ma wiele zdefiniowanych przez siebie kategorii)
+- receipts 1:N receipt_items (jeden paragon składa się z wielu pozycji/produktów)
+- categories 1:N receipt_items (jedna kategoria może być przypisana do wielu pozycji na paragonach)
+- roles 1:N users (jedna rola jest przypisana do wielu użytkowników)
+- roles M:N permissions (jedna rola ma wiele uprawnień, a jedno uprawnienie może należeć do wielu ról – tabela łącząca -> role_permissions)
 
 ### Trigger after insert on
 
