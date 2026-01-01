@@ -206,8 +206,7 @@ Przykładowy flow dodawania wydatku:
 Przy rejestracji nowego usera automatycznie kopiowane są domyślne kategorie.
 
 ### Diagram ERD
-
-<img width="1523" height="991" alt="image" src="https://github.com/user-attachments/assets/58d88d92-b9c4-49dd-92e8-65b542098772" />
+<img width="1275" height="920" alt="image" src="https://github.com/user-attachments/assets/f526d4db-6605-42d9-a4c6-b81ca3dc7ad3" />
 
 ## Bezpieczeństwo 
 
@@ -280,10 +279,10 @@ Przy rejestracji nowego usera automatycznie kopiowane są domyślne kategorie.
 <img width="695" height="953" alt="Edycja paragonu" src="https://github.com/user-attachments/assets/18326894-902a-458f-9f19-a55fe0f3690d" />
 
 ### Widok admina
-<img width="1892" height="934" alt="image" src="https://github.com/user-attachments/assets/3ba2b5d9-7903-4f07-b9f5-d183a7d2234f" />
+<img width="1911" height="955" alt="image" src="https://github.com/user-attachments/assets/ae2130b7-a4d4-4784-8b80-a481465cd97a" />
 
 ### Dodawanie usera przez admina
-<img width="1908" height="908" alt="image" src="https://github.com/user-attachments/assets/48cb0931-f438-4fee-bbad-8f06bd6a24de" />
+<img width="1907" height="840" alt="image" src="https://github.com/user-attachments/assets/9d4a6326-c3c9-420d-8743-48b5444df183" />
 
 ### Zablokowany user
 <img width="632" height="845" alt="image" src="https://github.com/user-attachments/assets/caaee115-d571-427d-ae69-ebc2cc50a054" />
