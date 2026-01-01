@@ -22,7 +22,9 @@ class AuthMiddleware
             'id' => $_SESSION['user_id'],
             'email' => $_SESSION['user_email'] ?? '',
             'name' => $_SESSION['user_name'] ?? '',
-            'surname' => $_SESSION['user_surname'] ?? ''
+            'surname' => $_SESSION['user_surname'] ?? '',
+            'role_id' => $_SESSION['role_id'] ?? 1,
+            'role_name' => $_SESSION['role_name'] ?? 'user'
         ];
     }
 
@@ -34,13 +36,56 @@ class AuthMiddleware
         $_SESSION['user_email'] = $userData['email'];
         $_SESSION['user_name'] = $userData['name'];
         $_SESSION['user_surname'] = $userData['surname'];
-        $_SESSION['is_admin'] = $userData['is_admin'] ?? false;
+        $_SESSION['role_id'] = $userData['role_id'] ?? 1;
+        $_SESSION['role_name'] = $userData['role_name'] ?? 'user';
+        $_SESSION['permissions'] = $userData['permissions'] ?? [];
         $_SESSION['login_time'] = time();
+    }
+
+    public static function getRoleId(): int
+    {
+        return $_SESSION['role_id'] ?? 1;
+    }
+
+    public static function getRoleName(): string
+    {
+        return $_SESSION['role_name'] ?? 'user';
     }
 
     public static function isAdmin(): bool
     {
-        return isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
+        return self::getRoleId() === 4;
+    }
+
+    public static function isPremium(): bool
+    {
+        return self::getRoleId() === 2;
+    }
+
+    public static function isBlocked(): bool
+    {
+        return self::getRoleId() === 3;
+    }
+
+    public static function isUser(): bool
+    {
+        return self::getRoleId() === 1;
+    }
+
+    public static function hasPermission(string $permissionName): bool
+    {
+        $permissions = $_SESSION['permissions'] ?? [];
+        return in_array($permissionName, $permissions, true);
+    }
+
+    public static function getPermissions(): array
+    {
+        return $_SESSION['permissions'] ?? [];
+    }
+
+    public static function canEditReceipts(): bool
+    {
+        return self::hasPermission('edit_receipts');
     }
 
     public static function logout(): void

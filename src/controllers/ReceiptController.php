@@ -116,6 +116,13 @@ class ReceiptController extends AppController
     public function edit(): void
     {
         $this->requireLogin();
+        
+        if (!AuthMiddleware::canEditReceipts()) {
+            $_SESSION['error'] = 'Nie masz uprawnień do edycji paragonów. Funkcja dostępna dla użytkowników Premium.';
+            header('Location: /dashboard');
+            exit;
+        }
+        
         $userId = $_SESSION['user_id'];
 
         $receiptId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -147,6 +154,12 @@ class ReceiptController extends AppController
     public function updateApi(): void
     {
         $this->requireLogin();
+        
+        if (!AuthMiddleware::canEditReceipts()) {
+            $this->json(['success' => false, 'error' => 'Nie masz uprawnień do edycji paragonów'], 403);
+            return;
+        }
+        
         $userId = $_SESSION['user_id'];
 
         if (!$this->isPost()) {

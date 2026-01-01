@@ -2,17 +2,20 @@
 
 require_once 'AppController.php';
 require_once __DIR__ . '/../repository/UserRepository.php';
+require_once __DIR__ . '/../repository/RoleRepository.php';
 require_once __DIR__ . '/../attributes/HttpMethod.php';
 
 
 class AdminController extends AppController
 {
     private UserRepository $userRepository;
+    private RoleRepository $roleRepository;
 
     public function __construct()
     {
         parent::__construct();
         $this->userRepository = UserRepository::getInstance();
+        $this->roleRepository = RoleRepository::getInstance();
     }
 
     private function requireAdmin(): void
@@ -32,11 +35,13 @@ class AdminController extends AppController
         $this->requireAdmin();
         
         $users = $this->userRepository->getAllUsers();
+        $roles = $this->roleRepository->getAllRoles();
         $success = $this->getFlash('success');
         $error = $this->getFlash('error');
         
         $this->render('admin', [
             'users' => $users,
+            'roles' => $roles,
             'success' => $success,
             'error' => $error
         ]);
@@ -48,9 +53,11 @@ class AdminController extends AppController
     {
         $this->requireAdmin();
 
+        $roles = $this->roleRepository->getAllRoles();
+
         if ($this->isGet()) {
             $error = $this->getFlash('error');
-            $this->render('admin-add-user', $error ? ['error' => $error] : []);
+            $this->render('admin-add-user', array_merge(['roles' => $roles], $error ? ['error' => $error] : []));
             return;
         }
 
@@ -63,7 +70,7 @@ class AdminController extends AppController
         $password = $_POST['password'] ?? '';
         $name = $this->sanitize($_POST['name'] ?? '');
         $surname = $this->sanitize($_POST['surname'] ?? '');
-        $isAdmin = isset($_POST['is_admin']) && $_POST['is_admin'] === '1';
+        $roleId = (int) ($_POST['role_id'] ?? RoleRepository::ROLE_USER);
 
         if (empty($email) || empty($password) || empty($name) || empty($surname)) {
             $this->redirectWithError('/admin/add-user', 'Wypełnij wszystkie pola');
@@ -90,8 +97,13 @@ class AdminController extends AppController
             return;
         }
 
+        $validRoleIds = array_column($roles, 'id');
+        if (!in_array($roleId, $validRoleIds)) {
+            $roleId = RoleRepository::ROLE_USER;
+        }
+
         try {
-            $result = $this->userRepository->createUserWithAdmin($email, $password, $name, $surname, $isAdmin);
+            $result = $this->userRepository->createUserWithRole($email, $password, $name, $surname, $roleId);
             
             if ($result) {
                 $_SESSION['success'] = 'Użytkownik został utworzony pomyślnie';
@@ -213,6 +225,129 @@ class AdminController extends AppController
             }
         } catch (Exception $e) {
             error_log("Admin toggle admin error: " . $e->getMessage());
+            $this->json(['success' => false, 'error' => 'Wystąpił błąd'], 500);
+        }
+    }
+
+
+    #[HttpMethod(['POST'])]
+    public function setRole(): void
+    {
+        $this->requireAdmin();
+
+        if (!$this->validateCsrf()) {
+            $this->json(['success' => false, 'error' => 'Nieprawidłowe żądanie'], 400);
+            return;
+        }
+
+        $userId = (int) ($_POST['user_id'] ?? 0);
+        $roleId = (int) ($_POST['role_id'] ?? 0);
+
+        if ($userId <= 0) {
+            $this->json(['success' => false, 'error' => 'Nieprawidłowy ID użytkownika'], 400);
+            return;
+        }
+
+        if ($roleId <= 0) {
+            $this->json(['success' => false, 'error' => 'Nieprawidłowa rola'], 400);
+            return;
+        }
+
+        if ($userId === $this->getUserId() && $roleId !== RoleRepository::ROLE_ADMIN) {
+            $this->json(['success' => false, 'error' => 'Nie możesz zmienić swojej roli'], 400);
+            return;
+        }
+
+        $role = $this->roleRepository->getRoleById($roleId);
+        if (!$role) {
+            $this->json(['success' => false, 'error' => 'Wybrana rola nie istnieje'], 400);
+            return;
+        }
+
+        try {
+            $result = $this->userRepository->setUserRole($userId, $roleId);
+            
+            if ($result) {
+                $this->json(['success' => true, 'message' => 'Zmieniono rolę na: ' . $role['display_name']]);
+            } else {
+                $this->json(['success' => false, 'error' => 'Nie udało się zmienić roli'], 500);
+            }
+        } catch (Exception $e) {
+            error_log("Admin set role error: " . $e->getMessage());
+            $this->json(['success' => false, 'error' => 'Wystąpił błąd'], 500);
+        }
+    }
+
+
+    #[HttpMethod(['GET'])]
+    public function userPermissions(): void
+    {
+        $this->requireAdmin();
+
+        $userId = (int) ($_GET['id'] ?? 0);
+
+        if ($userId <= 0) {
+            $this->redirect('/admin');
+            return;
+        }
+
+        $user = $this->userRepository->getUserById($userId);
+        if (!$user) {
+            $_SESSION['error'] = 'Użytkownik nie istnieje';
+            $this->redirect('/admin');
+            return;
+        }
+
+        $permissions = $this->userRepository->getEffectivePermissions($userId);
+
+        $this->render('admin-user-permissions', [
+            'targetUser' => $user,
+            'permissions' => $permissions
+        ]);
+    }
+
+
+    #[HttpMethod(['POST'])]
+    public function savePermissions(): void
+    {
+        $this->requireAdmin();
+
+        if (!$this->validateCsrf()) {
+            $this->json(['success' => false, 'error' => 'Nieprawidłowe żądanie'], 400);
+            return;
+        }
+
+        $userId = (int) ($_POST['user_id'] ?? 0);
+
+        if ($userId <= 0) {
+            $this->json(['success' => false, 'error' => 'Nieprawidłowy ID użytkownika'], 400);
+            return;
+        }
+
+        $user = $this->userRepository->getUserById($userId);
+        if (!$user) {
+            $this->json(['success' => false, 'error' => 'Użytkownik nie istnieje'], 400);
+            return;
+        }
+
+        $permissionsData = $_POST['permissions'] ?? [];
+
+        try {
+            foreach ($permissionsData as $permissionId => $value) {
+                $permissionId = (int) $permissionId;
+                if ($permissionId <= 0) continue;
+
+                if ($value === 'default') {
+                    $this->userRepository->removeUserPermission($userId, $permissionId);
+                } else {
+                    $granted = $value === '1';
+                    $this->userRepository->setUserPermission($userId, $permissionId, $granted);
+                }
+            }
+
+            $this->json(['success' => true, 'message' => 'Uprawnienia zostały zapisane']);
+        } catch (Exception $e) {
+            error_log("Admin save permissions error: " . $e->getMessage());
             $this->json(['success' => false, 'error' => 'Wystąpił błąd'], 500);
         }
     }

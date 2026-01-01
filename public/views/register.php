@@ -31,6 +31,7 @@
         <!-- Form -->
         <form action="/register" method="POST" class="register-form" id="registerForm">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token ?? '') ?>">
+            <?php $fd = $formData ?? []; ?>
             
             <!-- Name row -->
             <div class="register-name-row">
@@ -38,13 +39,15 @@
                     <label class="register-label" for="name">Imię</label>
                     <input type="text" name="name" id="name" required minlength="2" maxlength="100"
                         class="register-input"
-                        placeholder="Jan">
+                        placeholder="Jan"
+                        value="<?= htmlspecialchars($fd['name'] ?? '') ?>">
                 </div>
                 <div class="register-input-group">
                     <label class="register-label" for="surname">Nazwisko</label>
                     <input type="text" name="surname" id="surname" required minlength="2" maxlength="100"
                         class="register-input"
-                        placeholder="Kowalski">
+                        placeholder="Kowalski"
+                        value="<?= htmlspecialchars($fd['surname'] ?? '') ?>">
                 </div>
             </div>
 
@@ -55,7 +58,8 @@
                     <span class="material-symbols-outlined register-input-icon">mail</span>
                     <input type="email" name="email" id="email" required maxlength="255"
                         class="register-input"
-                        placeholder="jan@example.com">
+                        placeholder="jan@example.com"
+                        value="<?= htmlspecialchars($fd['email'] ?? '') ?>">
                 </div>
             </div>
 

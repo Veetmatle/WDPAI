@@ -46,10 +46,10 @@ function initPasswordToggle() {
         
         if (input.type === 'password') {
             input.type = 'text';
-            icon.textContent = 'visibility_off';
+            icon.textContent = 'visibility';
         } else {
             input.type = 'password';
-            icon.textContent = 'visibility';
+            icon.textContent = 'visibility_off';
         }
     });
 }

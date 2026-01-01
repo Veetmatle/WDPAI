@@ -83,7 +83,7 @@
 
 /* Kontener otaczający inputa i ikony */
 .login-input-wrapper {
-    position: relative; /* punkt odniesienia (0,0) dla ikon w środku */
+    position: relative;
     display: flex;
     width: 100%;
     align-items: center;
@@ -135,12 +135,12 @@
     padding-right: 3rem;
 }
 
-/* Password Toggle Button */
+/* Password Toggle Button - element flex z ujemnym marginesem */
 .login-password-toggle {
-    position: absolute; /* Unosi się nad inputem */
-    right: 0;
     height: 3.5rem;
-    width: 3rem; /* Obszar klikalny */
+    width: 3rem;
+    flex-shrink: 0;
+    margin-left: -3rem;
     display: flex;
     align-items: center;
     justify-content: center;

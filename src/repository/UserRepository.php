@@ -18,9 +18,10 @@ class UserRepository extends Repository
     public function getUserByEmail(string $email): ?User
     {
         $stmt = $this->database->connect()->prepare('
-            SELECT id, email, password_hash, name, surname, is_admin, is_blocked, last_login, created_at 
-            FROM users 
-            WHERE email = :email
+            SELECT u.id, u.email, u.password_hash, u.name, u.surname, u.role_id, r.name as role_name, u.last_login, u.created_at 
+            FROM users u
+            LEFT JOIN roles r ON u.role_id = r.id
+            WHERE u.email = :email
         ');
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
@@ -37,8 +38,8 @@ class UserRepository extends Repository
             $row['password_hash'],
             $row['name'],
             $row['surname'],
-            (bool) $row['is_admin'],
-            (bool) $row['is_blocked'],
+            (int) $row['role_id'],
+            $row['role_name'],
             $row['last_login'],
             $row['created_at']
         );
@@ -47,9 +48,10 @@ class UserRepository extends Repository
     public function getUserById(int $id): ?User
     {
         $stmt = $this->database->connect()->prepare('
-            SELECT id, email, password_hash, name, surname, is_admin, is_blocked, last_login, created_at 
-            FROM users 
-            WHERE id = :id
+            SELECT u.id, u.email, u.password_hash, u.name, u.surname, u.role_id, r.name as role_name, u.last_login, u.created_at 
+            FROM users u
+            LEFT JOIN roles r ON u.role_id = r.id
+            WHERE u.id = :id
         ');
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -66,26 +68,27 @@ class UserRepository extends Repository
             $row['password_hash'],
             $row['name'],
             $row['surname'],
-            (bool) $row['is_admin'],
-            (bool) $row['is_blocked'],
+            (int) $row['role_id'],
+            $row['role_name'],
             $row['last_login'],
             $row['created_at']
         );
     }
 
-    public function createUser(string $email, string $password, string $name, string $surname): bool
+    public function createUser(string $email, string $password, string $name, string $surname, int $roleId = User::ROLE_USER): bool
     {
         $passwordHash = password_hash($password, PASSWORD_ARGON2ID);
         
         $stmt = $this->database->connect()->prepare('
-            INSERT INTO users (email, password_hash, name, surname) 
-            VALUES (:email, :password_hash, :name, :surname)
+            INSERT INTO users (email, password_hash, name, surname, role_id) 
+            VALUES (:email, :password_hash, :name, :surname, :role_id)
         ');
         
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->bindParam(':password_hash', $passwordHash, PDO::PARAM_STR);
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
         $stmt->bindParam(':surname', $surname, PDO::PARAM_STR);
+        $stmt->bindParam(':role_id', $roleId, PDO::PARAM_INT);
         
         return $stmt->execute();
     }
@@ -146,24 +149,31 @@ class UserRepository extends Repository
     public function getAllUsers(): array
     {
         $stmt = $this->database->connect()->prepare('
-            SELECT id, email, name, surname, is_admin, is_blocked, last_login, created_at 
-            FROM users 
-            ORDER BY created_at DESC
+            SELECT u.id, u.email, u.name, u.surname, u.role_id, r.name as role_name, r.display_name as role_display_name, u.last_login, u.created_at 
+            FROM users u
+            LEFT JOIN roles r ON u.role_id = r.id
+            ORDER BY u.created_at DESC
         ');
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function setUserBlocked(int $id, bool $blocked): bool
+    public function setUserRole(int $id, int $roleId): bool
     {
         $stmt = $this->database->connect()->prepare('
             UPDATE users 
-            SET is_blocked = :blocked 
+            SET role_id = :role_id 
             WHERE id = :id
         ');
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->bindParam(':blocked', $blocked, PDO::PARAM_BOOL);
+        $stmt->bindParam(':role_id', $roleId, PDO::PARAM_INT);
         return $stmt->execute();
+    }
+
+    public function setUserBlocked(int $id, bool $blocked): bool
+    {
+        $roleId = $blocked ? User::ROLE_BLOCKED : User::ROLE_USER;
+        return $this->setUserRole($id, $roleId);
     }
 
     public function deleteUser(int $id): bool
@@ -175,33 +185,43 @@ class UserRepository extends Repository
         return $stmt->execute();
     }
 
-    public function createUserWithAdmin(string $email, string $password, string $name, string $surname, bool $isAdmin = false): bool
+    public function createUserWithRole(string $email, string $password, string $name, string $surname, int $roleId = User::ROLE_USER): bool
     {
-        $passwordHash = password_hash($password, PASSWORD_ARGON2ID);
-        
-        $stmt = $this->database->connect()->prepare('
-            INSERT INTO users (email, password_hash, name, surname, is_admin) 
-            VALUES (:email, :password_hash, :name, :surname, :is_admin)
-        ');
-        
-        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-        $stmt->bindParam(':password_hash', $passwordHash, PDO::PARAM_STR);
-        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
-        $stmt->bindParam(':surname', $surname, PDO::PARAM_STR);
-        $stmt->bindParam(':is_admin', $isAdmin, PDO::PARAM_BOOL);
-        
-        return $stmt->execute();
+        return $this->createUser($email, $password, $name, $surname, $roleId);
     }
 
     public function setUserAdmin(int $id, bool $isAdmin): bool
     {
+        $roleId = $isAdmin ? User::ROLE_ADMIN : User::ROLE_USER;
+        return $this->setUserRole($id, $roleId);
+    }
+
+    public function getUserPermissions(int $userId): array
+    {
         $stmt = $this->database->connect()->prepare('
-            UPDATE users 
-            SET is_admin = :is_admin 
-            WHERE id = :id
+            SELECT p.name
+            FROM permissions p
+            INNER JOIN role_permissions rp ON p.id = rp.permission_id
+            INNER JOIN users u ON u.role_id = rp.role_id
+            WHERE u.id = :user_id
         ');
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->bindParam(':is_admin', $isAdmin, PDO::PARAM_BOOL);
-        return $stmt->execute();
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function userHasPermission(int $userId, string $permissionName): bool
+    {
+        $stmt = $this->database->connect()->prepare('
+            SELECT COUNT(*) 
+            FROM permissions p
+            INNER JOIN role_permissions rp ON p.id = rp.permission_id
+            INNER JOIN users u ON u.role_id = rp.role_id
+            WHERE u.id = :user_id AND p.name = :permission_name
+        ');
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':permission_name', $permissionName, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
     }
 }

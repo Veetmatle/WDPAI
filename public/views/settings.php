@@ -228,6 +228,14 @@ $activePage = 'settings';
             </a>
         </section>
 
+        <!-- Admin Panel Link (tylko dla adminów) -->
+        <?php if (AuthMiddleware::isAdmin()): ?>
+        <a href="/admin" class="settings-admin-btn">
+            <span class="material-symbols-outlined">admin_panel_settings</span>
+            Panel Administratora
+        </a>
+        <?php endif; ?>
+
         <!-- Logout -->
         <form action="/logout" method="POST">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token ?? '') ?>">
@@ -239,8 +247,8 @@ $activePage = 'settings';
 
         <!-- App Info -->
         <div class="settings-app-info">
-            <p>Smart Expense Tracker v1.0</p>
-            <p>© 2024 - Projekt akademicki WdPAI</p>
+            <p>ChronoCash</p>
+            <p>I niech los zawsze wam sprzyja</p>
         </div>
     </main>
 

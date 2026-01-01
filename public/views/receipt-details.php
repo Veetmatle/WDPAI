@@ -134,10 +134,17 @@ $activePage = '';
 
         <!-- Actions -->
         <div class="receipt-details-actions">
+            <?php if (AuthMiddleware::canEditReceipts()): ?>
             <a href="/receipt/edit?id=<?= (int)$receipt['id'] ?>" class="receipt-details-action-btn primary">
                 <span class="material-symbols-outlined">edit</span>
                 Edytuj paragon
             </a>
+            <?php else: ?>
+            <div class="receipt-details-action-btn disabled" title="Funkcja dostępna dla Premium">
+                <span class="material-symbols-outlined">lock</span>
+                Edycja (Premium)
+            </div>
+            <?php endif; ?>
             
             <a href="/daily-expenses?date=<?= htmlspecialchars($receipt['receipt_date']) ?>" class="receipt-details-action-btn secondary">
                 <span class="material-symbols-outlined">calendar_today</span>

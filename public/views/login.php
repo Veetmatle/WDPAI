@@ -87,7 +87,7 @@
         <!-- Demo credentials -->
         <div class="login-demo-box">
             <p class="login-demo-label">Dane testowe:</p>
-            <p class="login-demo-credentials">test@example.com / test123</p>
+            <p class="login-demo-credentials">test@example.com / admin@example.com / premium@example.com / admin123</p>
         </div>
     </div>
 

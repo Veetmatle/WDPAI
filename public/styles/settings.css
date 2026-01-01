@@ -463,6 +463,30 @@
     transform: scale(1.02);
 }
 
+/* Admin Panel Button */
+.settings-admin-btn {
+    width: 100%;
+    padding: var(--spacing-4);
+    margin-bottom: var(--spacing-4);
+    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+    border: none;
+    color: white;
+    font-weight: 600;
+    border-radius: var(--radius-xl);
+    cursor: pointer;
+    transition: var(--transition-all);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    text-decoration: none;
+}
+
+.settings-admin-btn:hover {
+    transform: scale(1.02);
+    filter: brightness(1.1);
+}
+
 /* Logout Button */
 .settings-logout-btn {
     width: 100%;

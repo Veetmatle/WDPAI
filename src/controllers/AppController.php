@@ -116,9 +116,19 @@ abstract class AppController
         return $message;
     }
 
-    protected function redirectWithError(string $path, string $error): void
+    protected function redirectWithError(string $path, string $error, array $formData = []): void
     {
         $this->setFlash('error', $error);
+        if (!empty($formData)) {
+            $_SESSION['flash']['form_data'] = $formData;
+        }
         $this->redirect($path);
+    }
+
+    protected function getFlashFormData(): array
+    {
+        $data = $_SESSION['flash']['form_data'] ?? [];
+        unset($_SESSION['flash']['form_data']);
+        return $data;
     }
 }

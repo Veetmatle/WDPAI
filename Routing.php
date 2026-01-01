@@ -23,6 +23,9 @@ class Routing
         'admin/block-user' => ['controller' => 'AdminController', 'action' => 'blockUser'],
         'admin/delete-user' => ['controller' => 'AdminController', 'action' => 'deleteUser'],
         'admin/toggle-admin' => ['controller' => 'AdminController', 'action' => 'toggleAdmin'],
+        'admin/set-role' => ['controller' => 'AdminController', 'action' => 'setRole'],
+        'admin/user-permissions' => ['controller' => 'AdminController', 'action' => 'userPermissions'],
+        'admin/save-permissions' => ['controller' => 'AdminController', 'action' => 'savePermissions'],
         
         'dashboard' => ['controller' => 'DashboardController', 'action' => 'index'],
         'calendar' => ['controller' => 'CalendarController', 'action' => 'index'],
